@@ -1,4 +1,5 @@
-# VGPA
+VGPA
+======
 
 Variational Gaussian Process Approximation
 
@@ -13,5 +14,4 @@ The code can deal with both 1-D and N-D systems. Examples include:
 0. Ornstein-Uhlenbeck (1-D)
 0. Double-Well (1-D)
 0. Lorenz-63 (3-D)
-0. Lorenz-98 (40D)
-
+0. Lorenz-98 (40-D)
