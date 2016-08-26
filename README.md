@@ -10,8 +10,8 @@ in: Journal of Machine Learning Research, Workshop and Conference Proceedings. v
 
 The code can deal with both 1-D and N-D systems. Examples include:
 
-1 Ornstein-Uhlenbeck (1-D)
-2 Double-Well (1-D)
-3 Lorenz-63 (3-D)
-4 Lorenz-98 (40D)
+  1) Ornstein-Uhlenbeck (1-D)
+  2) Double-Well (1-D)
+  3) Lorenz-63 (3-D)
+  4) Lorenz-98 (40D)
 
