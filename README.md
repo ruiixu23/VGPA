@@ -16,6 +16,9 @@ The code can deal with both 1-D and N-D systems. Examples include:
 0. Lorenz-63 (3-D)
 0. Lorenz-98 (40-D)
 
+If someone is interested in applying the algorithm on other dynamical systems is fully responible to (re)-write the relevant
+files for the necessary expectation functions.
+
 Note
 ----
 
