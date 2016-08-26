@@ -30,4 +30,3 @@ Some of the optimizations in the 'auxiliary/optimize.py' are adopted (translated
     (1) Ian T. Nabney (2001): Netlab: Algorithms for Pattern Recognition. Advances in Pattern Recognition, Springer.
 
 All the copyrights of this algorithm remain with the original author of the book (Ian T. Nabney).
-
