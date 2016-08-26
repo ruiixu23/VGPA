@@ -15,3 +15,15 @@ The code can deal with both 1-D and N-D systems. Examples include:
 0. Double-Well (1-D)
 0. Lorenz-63 (3-D)
 0. Lorenz-98 (40-D)
+
+Note
+----
+
+Some of the optimizations in the 'auxiliary/optimize.py' are adopted (translated) from NETLAB (a free MATLAB library),
+with the following reference:
+
+    NOTE: This code is adopted from NETLAB (a free MATLAB library)
+    
+    Reference Book:
+    (1) Ian T. Nabney (2001): Netlab: Algorithms for Pattern Recognition.
+    Advances in Pattern Recognition, Springer.
