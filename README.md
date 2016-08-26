@@ -19,13 +19,12 @@ The code can deal with both 1-D and N-D systems. Examples include:
 Note
 ----
 
-Some of the optimizations in the 'auxiliary/optimize.py' are adopted (translated) from NETLAB (a free MATLAB library),
-with the following reference:
+Some of the optimizations in the 'auxiliary/optimize.py' are adopted (translated) from NETLAB with the following message:
 
     NOTE: This code is adopted from NETLAB (a free MATLAB library)
     
     Reference Book:
     (1) Ian T. Nabney (2001): Netlab: Algorithms for Pattern Recognition. Advances in Pattern Recognition, Springer.
 
-All the copyrights remain with the original author of the book/algorithm (Ian T. Nabney)
+All the copyrights of this algorithm remain with the original author of the book (Ian T. Nabney).
 
