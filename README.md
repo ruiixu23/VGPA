@@ -25,5 +25,7 @@ with the following reference:
     NOTE: This code is adopted from NETLAB (a free MATLAB library)
     
     Reference Book:
-    (1) Ian T. Nabney (2001): Netlab: Algorithms for Pattern Recognition.
-    Advances in Pattern Recognition, Springer.
+    (1) Ian T. Nabney (2001): Netlab: Algorithms for Pattern Recognition. Advances in Pattern Recognition, Springer.
+
+All the copyrights remain with the original author of the book/algorithm (Ian T. Nabney)
+
