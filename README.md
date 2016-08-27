@@ -1,7 +1,7 @@
 VGPA
 ======
 
-*Variational Gaussian Process Approximation*
+**Variational Gaussian Process Approximation**
 
 This project contains a python implementation of the basic VGPA algorithm for approximate inference in SDEs.
 The code refers to the initial algorithms as published in:
