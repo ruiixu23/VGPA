@@ -8,8 +8,25 @@ __all__ = ['initialize_Ab0']
 # Listing 01:
 def initialize_Ab0(S0, sde_struct):
     """
-    ...
+        INITIALIZATION OF THE VARIATIONAL PARAMETERS
+
+    [Description]
+    This function initilizes the variational parameters A and b. This is
+    done with a simple interpolation technique. In the case where the dim
+    is more than one the interpolation happens on each dimension separately.
+    
+    [Input]
+    S0         : marginal variance at t=0 (D x D).
+    sde_struct : data structure (dictionary) that holds model parameters.
+    
+    [Output]
+    [A0, b0] : the output is concatenated in one single vector (K x 1).
+    
+    Copyright (c) Michail D. Vrettas, PhD - November 2015.
+    
+    Last Updated: August 2016.
     """
+    
     # Extract parameters.
     Sigma = sde_struct['Sig']
     

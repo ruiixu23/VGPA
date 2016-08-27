@@ -6,20 +6,20 @@ def momGauss(m, S, order=0, dmS=None):
     """
         GAUSSIAN MOMENTS (AND DERIVATIVES)
 
-    [Description]:
+    [Description]
     This function returns the uncentered moments of a univariate Gaussian
     density, up to 8-th order. Depending on the last argument 'dmS' the
     function also returns the derivative with respect to the marginal means
     'Dm' or the marginal variances 'DS'. An error is thrown if the order of
     the Gaussian moment is not in the [0-8].
 
-    [Input Parameters]:
+    [Input]
     m     : marginal means (N x 1).
     S     : marginal variances (N x 1).
     order : {0,1,2,3,4,5,6,7,8}
     dmS   : {None (default), 'Dm', 'DS'}
 
-    [Output Parameters]:
+    [Output]
     xOut  : uncentered moment (or derivative) of specific 'order' (1 x N).
 
     Copyright (c) Michail D. Vrettas, PhD - November 2015.

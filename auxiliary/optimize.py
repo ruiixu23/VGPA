@@ -8,7 +8,7 @@ __all__ = ['optim_SCG', 'optim_CG', 'optim_SA']
 # Listing: 01
 def optim_SCG(f, x0, gf, options, mParam):
     """
-        OPTIM_SCG:
+        OPTIM_SCG
     
     [Description]
     Scaled conjugate gradient optimization, attempts to find a local minimum
@@ -17,7 +17,7 @@ def optim_SCG(f, x0, gf, options, mParam):
     The point at which 'f' has a local minimum is returned as 'x'. The function
     value at that point (the minimum) is returned in "fx".
     
-    [Input parameres]:
+    [Input]
     f      : is the objective function to be optimised.
     x0     : is the initial point of function (D x 1).
     gf     : is the derivative of the objective function w.r.t 'x'.
@@ -29,7 +29,7 @@ def optim_SCG(f, x0, gf, options, mParam):
                 (3) absolute precision in 'fx',
                 (4) display error statistics flag
     
-    [Output parameters]:
+    [Output]
     x      : the point where the minimum was found.
     fx     : the function value, at the minimum point.
     mParam : additional output parameters for "f".
@@ -247,7 +247,7 @@ def optim_SCG(f, x0, gf, options, mParam):
 # Listing: 02
 def optim_CG(f, x0, gf, options, mParam):
     """
-        OPTIM_CG:
+        OPTIM_CG
     
     [Description]
     Conjugate gradient optimization, attempts to find a local minimum
@@ -256,7 +256,7 @@ def optim_CG(f, x0, gf, options, mParam):
     (i.e. df(x)/dx). The point at which 'f' has a local minimum is returned
     as 'x'. The function value at that point (the minimum) is returned in "fx".
     
-    [Input parameres]:
+    [Input]
     f      : is the objective function to be optimised.
     x0     : is the initial point of function (D x 1).
     gf     : is the derivative of the objective function w.r.t 'x'.
@@ -268,7 +268,7 @@ def optim_CG(f, x0, gf, options, mParam):
                 (3) absolute precision in 'fx',
                 (4) display error statistics flag
     
-    [Output parameters]:
+    [Output]
     x      : the point where the minimum was found.
     fx     : the function value, at the minimum point.
     mParam : additional output parameters for "f".
@@ -423,11 +423,11 @@ def backtrack(f, x0, f0, df0, eta0, r, *args):
     """
         BACTRACK
     
-    Description:
+    [Description]
     Backtracking method to find optimum step size
     for the conjugate gradient algorithm (OPTIM_CG).
     
-    [Input parameters]:
+    [Input]
     f     : is the objective function to be optimised.
     x0    : is the current search point of function (D x 1).
     fx0   : is the value of the objective function 'f',
@@ -438,7 +438,7 @@ def backtrack(f, x0, f0, df0, eta0, r, *args):
     r     : decrease ratio for step size 0 < r < 1.
     *args : additional parameters for function 'f'.
     
-    [Output parameters]:
+    [Output]
     eta   : optimal step size.
     cnt   : number of function evaluations.
     
@@ -479,7 +479,7 @@ def backtrack(f, x0, f0, df0, eta0, r, *args):
 # Listing: 03
 def optim_SA(f, x0, gf, options, mParam):
     """
-        OPTIM_SA:
+        OPTIM_SA
     
     [Description]
     Simulated annealing optimization, attempts to find a local minimum
@@ -488,7 +488,7 @@ def optim_SA(f, x0, gf, options, mParam):
     (i.e. df(x)/dx). The point at which 'f' has a local minimum is returned
     as 'x'. The function value at that point (the minimum) is returned in "fx".
     
-    [Input parameres]:
+    [Input]
     f      : is the objective function to be optimised.
     x0     : is the initial point of function (D x 1).
     gf     : is the derivative of the objective function w.r.t 'x'.
@@ -500,7 +500,7 @@ def optim_SA(f, x0, gf, options, mParam):
                 (3) absolute precision in 'fx',
                 (4) display error statistics flag
     
-    [Output parameters]:
+    [Output]
     x      : the point where the minimum was found.
     fx     : the function value, at the minimum point.
     mParam : additional output parameters for "f".

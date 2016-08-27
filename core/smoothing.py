@@ -17,13 +17,13 @@ def smoothing(fun_sde, x0, m0, S0, sde_struct, nit = 150):
     """
         SMOOTHING
     
-    [Description]:
+    [Description]
     Variational Gaussian Process Approximation (VGPA) for inference of SDEs.
     The smoothing process is performed within a predefined time interval [t0-tf]
     given a discrete set of noisy observations. The optimisation is performed
     with an adaptive scaled-conjugate-gradient optimization algorithm (SCG).
     
-    [Input Parameters]:
+    [Input]
     fun_sde : Objective function handle. This is model specific and has to be
               given for each dynamical system separately.
     x0      : Initial search point.
@@ -32,7 +32,7 @@ def smoothing(fun_sde, x0, m0, S0, sde_struct, nit = 150):
     sde_struct : Data structure (dictionary) that holds model parameters.
     nit     : Maximum number of iterations.
     
-    [Output Parameters]:
+    [Output]
     F      : Variational Free energy (scalar value).
     mParam : Output parameters include:
             (1) m   : Posterior means (N x D).

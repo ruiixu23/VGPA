@@ -1,46 +1,3 @@
-"""
-function [KL0,dKL0_dm0,dKL0_dS0] = kl0_Gauss_nD(m0,S0,lam0,Psi0,sDyn)
-% KL0_GAUSS_ND:
-% function [KL0,dKL0_dm0,dKL0_dS0] = kl0_Gauss_nD(m0,S0,lam0,Psi0,sDyn)
-%
-% Description:
-% Energy for the initial state with Gaussian prior and gradients.
-%
-% [INPUT PARAMETERS]
-% m0    : initial variational mean       (D x 1).
-% S0    : initial variational covariance (D x D).
-% lam0  : initial lagrange multiplier    (D x 1).
-% Psi0  : initial lagrange multiplier    (D x D).
-% sDyn  : sde structure.
-%
-% [OUTPUT PARAMETERS]
-% KL0      : energy of the initial state.
-% dKL0_dm0 : gradient of KL0 w.r.t. the initial mean       (D x 1).
-% dKL0_dS0 : gradient of KL0 w.r.t. the initial covariance (D x D).
-%
-% Copyright C. Archambeau - May 2007.
-% ----------------------------------------------
-% SEE ALSO: varFreeEnergy_nD.
-%
-% NOTE: The equation numbers correspond to the paper:
-%
-% @CONFERENCE{Archambeau2007b,
-%  author = {Cedric Archambeau and Manfred Opper and Yuan Shen and Dan Cornford
-%  and J. Shawe-Taylor},
-%  title = {Variational Inference for Diffusion Processes},
-%  booktitle = {Annual Conference on Neural Information Processing Systems},
-%  year = {2007}
-% }
-%
-% Modified by Michail D. Vrettas - February 2008.
-% 
-% Last Updated: December 2009.
-%
-% Neural Computing Research Group (NCRG)
-% School of Engineering and Applied Science - 
-% Aston University - Birmingham, UK.
-%
-"""
 # Import:
 import numpy as np
 from auxiliary.numerical import log_det
@@ -50,6 +7,38 @@ __all__ = ['gauss']
 
 # Listing 01:
 def gauss(m0, S0, lam, Psi, sde_struct):
+    '''
+        GAUSSIAN LIKELIHOOD @(t=0)
+    
+    [Description]
+    Energy for the initial state with Gaussian prior and gradients.
+    
+    [Input]
+    m0   : initial variational mean       (D x 1).
+    S0   : initial variational covariance (D x D).
+    lam  : initial lagrange multiplier    (D x 1).
+    Psi  : initial lagrange multiplier    (D x D).
+    sde_struct : Data structure (dictionary) that holds model parameters.
+    
+    [Output]
+    KL0      : energy of the initial state                   (1 x 1).
+    dKL0_dm0 : gradient of KL0 w.r.t. the initial mean       (D x 1).
+    dKL0_dS0 : gradient of KL0 w.r.t. the initial covariance (D x D).
+    
+    Copyright (c) Michail D. Vrettas, PhD - November 2015.
+    
+    Last Updated: August 2016.
+    
+    Contact:
+      If you find any bug or have any suggestions,
+      please contact me at : <vrettasm@gmail.com>
+    
+    Webpage:
+      The code can be downloaded from:
+      <http://vrettasm.weebly.com/software.html>
+    
+    '''
+    
     # Call the correct version.
     if (sde_struct['D'] == 1):
         return gauss_1D(m0, S0, lam, Psi, sde_struct)
@@ -58,6 +47,10 @@ def gauss(m0, S0, lam, Psi, sde_struct):
 
 # Listing 02:
 def gauss_1D(m0, S0, lam, Psi, sde_struct):
+    '''
+        Gaussian likelihood: 1D
+    '''
+    
     # Initialize prior moments.
     mu0 = sde_struct['px0']['mu0']
     tau0 = sde_struct['px0']['tau0']
@@ -77,6 +70,10 @@ def gauss_1D(m0, S0, lam, Psi, sde_struct):
 
 # Listing 03:
 def gauss_nD(m0, S0, lam, Psi, sde_struct):
+    '''
+        Gaussian likelihood: nD
+    '''
+    
     # Initialize prior moments.
     mu0 = sde_struct['px0']['mu0']
     tau0 = sde_struct['px0']['tau0']

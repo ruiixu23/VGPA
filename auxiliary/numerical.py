@@ -11,13 +11,13 @@ def chol_inv(A):
     """
         CHOLINV
     
-    Description:
+    [Description]
     Returns the inverse of a matrix by using Cholesky decomposition.
     
-    Input:
+    [Input]
     A  : input array (D x D).
     
-    Output:
+    [Output]
     Ai : Inverse of A (D x D).
     Ri : Inverted Cholesky factor.
     
@@ -55,13 +55,13 @@ def log_det(A):
     """
         LOG(DET)
     
-    Description:
+    [Description]
     Returns the log(det(A)), but more stable and accurate.
     
-    Input:
+    [Input]
     A : input array (D x D).
     
-    Output:
+    [Output]
     X : log(det(A)) (D x D).
     
     References:
@@ -93,19 +93,19 @@ def finiteDiff(fun, x, mParam, h = 1.0e-6):
     """
         FINITEDIFF
     
-    Description:
+    [Description]
     Calculates the approximate derivative of function "fun"
     on a parameter vector "x". A central difference formula
     with step size "h" is used, and the result is returned
     in vector "gradN".
     
-    Input  :
+    [Input]
     fun    : the objective function that we want to check.
     x      : the point where we want to check the gradient.
     mParam : additional function parameters.
     h      : stepzise for CD formula (optional).
     
-    Output :
+    [Output]
     gradN  : gradient calculated numerically.
     
     References:
@@ -157,18 +157,18 @@ def ut_approx(f, xbar, Pxx, *args):
     """
         UNSCENTED TRANSFORMATION
     
-    Description:
+    [Description]
     This method computes the approximate values for the mean and
     the covariance of a multivariate random variable. To achieve
     that, the "Unscented Transformation" (UT) is used.
     
-    Input :
+    [Input]
     f     : function of the nonlinear transformation of the state vector.
     xbar  : current mean of the state vector        (1 x D).
     Pxx   : current covarriance of the state vector (D x D).
     *args : additional parameter for the "f" function.
     
-    Output:
+    [Output]
     ybar  : estimated mean after nonlinear transformation       (1 x K).
     Pyy   : estimated covariance after nonlinear transformation (K x K).
     
@@ -235,7 +235,7 @@ def mytrapz(fxt, dt, idx=None):
     """
         TRAPZ (NUMERICAL INTEGRATION)
     
-    Description:
+    [Description]
     This method computes the numerical integral of the discrete function values
     'fx', with space increment dt, using the composite trapezoidal rule.
     This code applies the function: numpy.trapz(y, x=None, dx=1.0, axis=-1)
@@ -244,12 +244,12 @@ def mytrapz(fxt, dt, idx=None):
     integral incrementally we achieve better numerical results. If no 'idx'
     is given, then we call directly trapz().
     
-    Input:
+    [Input]
     fx   : function values (discrete).
     dt   : discretization step (time-wise)
     idx  : observation times (indexes) - optional
     
-    Output:
+    [Output]
     trapz : Definite integral as approximated by trapezoidal rule.
     
     See Also
@@ -291,15 +291,15 @@ def safelog(x = None):
     '''
         SAFE LOG
     
-    Description:
-        This (helper) function prevents the computation of very small or very  large
-        values of logarithms that would lead to -/+ inf, by setting predefined LOWER
-        and UPPER bounds. The bounds are set as follows:
+    [Description]
+    This (helper) function prevents the computation of very small or very  large
+    values of logarithms that would lead to -/+ inf, by setting predefined LOWER
+    and UPPER bounds. The bounds are set as follows:
+    
+        - LOWER = 1.0E-300
+        - UPPER = 1.0E+300
         
-            - LOWER = 1.0E-300
-            - UPPER = 1.0E+300
-            
-        It is assumed that the input values lie within this range.
+    It is assumed that the input values lie within this range.
     
     Example:
         >> numpy.log(1.0E-350)
@@ -308,10 +308,10 @@ def safelog(x = None):
         >> safelog(1.0E-350)
         >> -690.77552789821368
     
-    Input:
+    [Input]
         x : input array (N x M).
         
-    Output:
+    [Output]
         x : the log(x) after the values of x have been filtered (N x M).
     
     References:

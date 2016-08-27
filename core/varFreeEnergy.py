@@ -10,22 +10,22 @@ def varFreeEnergy(Ab, mParam):
     """
         VARIATIONAL FREE ENERGY (COST FUNCTION)
     
-    Description:
-    Computes parameters related to the variational posterior process defined by 
-    the linear/offset parameters A(t) and b(t).
+    [Description]
+    Computes parameters related to the variational posterior process
+    defined by the linear/offset parameters A(t) and b(t).
     
-    [Input parameters]:
-    Ab      : initial variational linear parameters 'A' (N x D x D) +
-              initial variational offset parameters 'b' (N x D).
-    mParam  : structure that holds all the parameters.
+    [Input]
+    Ab     : initial variational linear parameters 'A' (N x D x D) +
+             initial variational offset parameters 'b' (N x D).
+    mParam : structure that holds all the parameters.
     
-    [Output parameters]:
-    F       : variational Free Energy.
+    [Output]
+    F      : variational Free Energy.
     
-    N.B: Since the stricure 'mParam' is passed by reference, all the
+    N.B: Since the structure 'mParam' is passed by reference all the
          parameters it contains are updated and returned implicitly.
     
-    SEE ALSO: kl0_Gauss_nD, likelihood_nD, fwd_sweep_nD, bwd_wseep_nD.
+    SEE ALSO: kl0, likelihood, fwd_ode, bwd_ede.
     
     NOTE: The equation numbers correspond to the paper:
     
@@ -79,8 +79,8 @@ def varFreeEnergy(Ab, mParam):
     # Forward sweep to get consistent 'm' and 'S'.
     m, S = fwd_ode.solver(A, b, m0, S0, Sigma, dt, ode_method)
     
-    # Update the structure with the (new) model parameters:
-    # Posterior moments: m(t), S(t).
+    # Update the structure with the (new) 
+    # posterior moments {m(t), S(t).
     mParam['mt'] = m
     mParam['St'] = S
     

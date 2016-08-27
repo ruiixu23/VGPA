@@ -9,22 +9,22 @@ def collect_obs(xt, T, n_Obs=1, R=0.2, hMask=None):
     """
         COLLECT_OBS
     
-    [Description]:
+    [Description]
     This function collects a number of noisy observations from a sample path
     (trajectory). The observations are collected at equidistant time points.
     
-    [Input parameters]:
+    [Input]
     xt    : Discretised trajectory (sample path) [N x D].
     T     : Time window of inference [N x 1].
     n_Obs : Observations density (# of observations per time unit).
     R     : Observation noise (co)variance.
     hMask : List that masks only the observed values.
     
-    [Output parameters]:
+    [Output]
     obsX : observation times
     obsY : observation values (with i.i.d. white noise)
     
-    [See also]: create_system_paths.
+    SEE ALSO : create_system_paths.
     
     Copyright (c) Michail D. Vrettas, PhD - November 2015.
     
