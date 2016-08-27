@@ -41,23 +41,21 @@ def lorenz98(x,u):
 
 # Listing: 01
 def system_path(T, sig0, thet0):
-    """ System Path:
-    def system_paths(T, sig0, thet0)
+    """ 
+        SYSTEM PATH
     
-    [Description]:
-     This file generates realizations of the stochastic Lorenz 1963 dynamical
-     system, within a specified time-window. The user must also define the time
-     window of the sample path (trajectory), along with the hyperparameter(s).
+    [Description]
+    This file generates realizations of the stochastic Lorenz 1963 dynamical
+    system, within a specified time-window. The user must also define the time
+    window of the sample path (trajectory), along with the hyperparameter(s).
     
-    [Input Parameters]:
-     T     : Time window [t0:dt:tf].
-     sig0  : System Noise (Variance).
-     thet0 : Drift hyper-parameter(s).
+    [Input]
+    T     : Time window [t0:dt:tf].
+    sig0  : System Noise (Variance).
+    thet0 : Drift hyper-parameter(s).
     
-    [Output Parameters]:
-     xt    : Contains the system trajectory (N x 3).
-    
-    [See also]: collect_obs.
+    [Output]
+    xt    : Contains the system trajectory (N x 3).
     
     Copyright (c) Michail D. Vrettas, PhD - November 2015.
      
@@ -136,18 +134,18 @@ def energy_mode(A, b, m, S, sDyn):
     """
         ENERGY MODE:
     
-    [Description]:
+    [Description]
     Energy for the stocastic Lorenz 63 DE (3 dimensional) and related quantities
     (including gradients).
     
-    [Input Parameters]:
+    [Input]
     A         : variational linear parameters (N x D x D).
     b         : variational offset parameters (N x D).
     m         : narginal means (N x D).
     S         : marginal variances  (N x D x D).
     sDyn      : structure containing additional parameters.
     
-    [Output Parameters]:
+    [Output]
     Esde      : total energy of the sde.
     Ef        : average drift (N x D).
     Edf       : average differentiated drift (N x D).
@@ -155,8 +153,6 @@ def energy_mode(A, b, m, S, sDyn):
     dEsde_dS  : gradient of Esde w.r.t. the covariance (N x D x D).
     dEsde_dth : gradient of Esde w.r.t. the parameter theta.
     dEsde_dSig: gradient of Esde w.r.t. the parameter Sigma.
-    
-    [See also]:
     
     NOTE: The equation numbers correspond to the paper:
     

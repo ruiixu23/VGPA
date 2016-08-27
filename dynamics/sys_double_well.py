@@ -12,23 +12,23 @@ __all__ = ['system_path', 'plot_sample_path', 'energy_mode']
 
 # Listing: 01
 def system_path(T, sig0, thet0):
-    """ System Path:
-    def system_paths(T, sig0, thet0)
+    """ 
+        SYSTEM PATH
     
-    [Description]:
-     This file generates realizations of the double well (DW) dynamical system,
-     within a specified time-window. The user must also define the time window
-     of the sample path (trajectory), along with the hyperparameter(s).
+    [Description]
+    This file generates realizations of the double well (DW) dynamical system,
+    within a specified time-window. The user must also define the time window
+    of the sample path (trajectory), along with the hyperparameter(s).
     
-    [Input Parameters]:
-     T     : Time window [t0:dt:tf].
-     sig0  : System Noise (Variance).
-     thet0 : Drift hyper-parameter(s).
+    [Input]
+    T     : Time window [t0:dt:tf].
+    sig0  : System Noise (Variance).
+    thet0 : Drift hyper-parameter(s).
     
-    [Output Parameters]:
-     xt    : Contains the system trajectory (N x 1).
+    [Output]
+    xt    : Contains the system trajectory (N x 1).
     
-    [See also]: collect_obs.
+    SEE ALSO: collect_obs.
     
     Copyright (c) Michail D. Vrettas, PhD - November 2015.
      
@@ -93,29 +93,27 @@ def plot_sample_path(Tk, xt):
 # Listing: 03
 def energy_mode(A, b, m, S, sDyn):
     """
-        ENERGY MODE:
+        ENERGY MODE
     
-    [Description]:
-     Energy for the double-well SDE and related quantities (including gradients).
+    [Description]
+    Energy for the double-well SDE and related quantities (including gradients).
     
-    [Input Parameters]:
-     A         : variational linear parameters (N x 1).
-     b         : variational offset parameters (N x 1).
-     m         : narginal means (N x 1).
-     S         : marginal variances  (N x 1).
-     sDyn      : structure containing additional parameters.
+    [Input]
+    A         : variational linear parameters (N x 1).
+    b         : variational offset parameters (N x 1).
+    m         : narginal means (N x 1).
+    S         : marginal variances  (N x 1).
+    sDyn      : structure containing additional parameters.
     
-    [Output Parameters]:
-     Esde      : total energy of the sde.
-     Ef        : average drift (N x 1).
-     Edf       : average differentiated drift (N x 1).
-     dEsde_dm  : gradient of Esde w.r.t. the means (N x 1).
-     dEsde_dS  : gradient of Esde w.r.t. the covariance (N x 1).
-     dEsde_dth : gradient of Esde w.r.t. the parameter theta.
-     dEsde_dSig: gradient of Esde w.r.t. the parameter Sigma.
-    
-    [See also]:
-    
+    [Output]
+    Esde      : total energy of the sde.
+    Ef        : average drift (N x 1).
+    Edf       : average differentiated drift (N x 1).
+    dEsde_dm  : gradient of Esde w.r.t. the means (N x 1).
+    dEsde_dS  : gradient of Esde w.r.t. the covariance (N x 1).
+    dEsde_dth : gradient of Esde w.r.t. the parameter theta.
+    dEsde_dSig: gradient of Esde w.r.t. the parameter Sigma.
+        
     NOTE: The equation numbers correspond to the paper:
     
     @CONFERENCE{Archambeau2007b,

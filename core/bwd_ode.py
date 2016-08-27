@@ -11,13 +11,13 @@
     prevent common errors.
 	
 	List:
-            The module include the following methods in both 1D and nD versions
-            (a detailed description is given at the individuals methods):
-            
-            1) Euler (1st Order)
-            2) Heun  (2nd Order)
-            3) Runge-Kutta (2nd Order)
-            4) Runge-Kutta (4th Order)
+        The module include the following methods in both 1D and nD versions
+        (a detailed description is given at the individuals methods):
+        
+        1) Euler       (1st Order)
+        2) Heun        (2nd Order)
+        3) Runge-Kutta (2nd Order)
+        4) Runge-Kutta (4th Order)
 	
 	Author:
 		Michail D. Vrettas, PhD
@@ -27,7 +27,7 @@
     
 	Webpage:
 		The code can be downloaded from:
-                    <http://vrettasm.weebly.com/software.html>
+        <http://vrettasm.weebly.com/software.html>
 	
 	Copyright (c) Michail D. Vrettas, PhD - November 2015.
 """

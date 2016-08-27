@@ -9,14 +9,14 @@ def gradEsde_mS(x, F, mt, St, At, bt, diagSigI, sDyn=None):
     """
         GRADIENT of ESDE w.r.t MEAN and STD
     
-    Description:
+    [Description]
     Returns the gradient of the -SDE- energy function with respect
     to the marginal means and variances . This method is used when
     the analytic expressions for the gradients are difficult to be
     computed, hence we use approximations such as the unscented
     transformation.
     
-    [Input parameters]:
+    [Input]
     x        : input state samples (K x D).
     F        : drift function.
     mt       : marginal mean at time 't' (1 x D).
@@ -26,7 +26,7 @@ def gradEsde_mS(x, F, mt, St, At, bt, diagSigI, sDyn=None):
     diagSigI : diagonal elements of inverse system noise (1 x D).
     sDyn     : optional additional parameters for the model function.
     
-    [Output parameters]:
+    [Output]
     dmS      : gradient w.r.t. to 'mt' and 'St' [K x D*(D+1)].
     
     Copyright (c) Michail D. Vrettas, PhD - November 2015.

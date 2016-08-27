@@ -13,14 +13,17 @@ __all__ = ['system_path', 'plot_sample_path', 'energy_mode']
 # Listing: 00
 def lorenz63(x,u):
     """
-    Lorenz63(x,u)
+        LORENZ-63 EQUATION
     
+    [Description]
     Differential equations for the Lorenz 63 system (3D).
-    x - 3 dimensional state vector
-    u - additional parameters (sigma, rho, beta)
     
-    [OUTPUT]
-    dx - return vector.
+    [Input]
+    x : 3 dimensional state vector
+    u : additional model parameters (sigma, rho, beta)
+    
+    [Output]
+    dx : return vector [3 x 1].
     
     Copyright (c) Michail D. Vrettas - November 2015.
     """
@@ -42,23 +45,23 @@ def lorenz63(x,u):
 
 # Listing: 01
 def system_path(T, sig0, thet0):
-    """ System Path:
-    def system_paths(T, sig0, thet0)
+    """ 
+        SYSTEM PATH
     
-    [Description]:
-     This file generates realizations of the stochastic Lorenz 1963 dynamical
-     system, within a specified time-window. The user must also define the time
-     window of the sample path (trajectory), along with the hyperparameter(s).
+    [Description]
+    This file generates realizations of the stochastic Lorenz 1963 dynamical
+    system, within a specified time-window. The user must also define the time
+    window of the sample path (trajectory), along with the hyper-parameter(s).
     
-    [Input Parameters]:
-     T     : Time window [t0:dt:tf].
-     sig0  : System Noise (Variance).
-     thet0 : Drift hyper-parameter(s).
+    [Input]
+    T     : Time window [t0:dt:tf].
+    sig0  : System Noise (Variance).
+    thet0 : Drift hyper-parameter(s).
     
-    [Output Parameters]:
-     xt    : Contains the system trajectory (N x 3).
+    [Output]
+    xt    : Contains the system trajectory (N x 3).
     
-    [See also]: collect_obs.
+    SEE ALSO: collect_obs.
     
     Copyright (c) Michail D. Vrettas, PhD - November 2015.
      
@@ -131,20 +134,20 @@ def plot_sample_path(xt):
 # Listing: 03
 def energy_mode(A, b, m, S, sDyn):
     """
-        ENERGY MODE:
+        ENERGY MODE
     
-    [Description]:
+    [Description]
     Energy for the stocastic Lorenz 63 DE (3 dimensional) and related quantities
     (including gradients).
     
-    [Input Parameters]:
+    [Input]
     A         : variational linear parameters (N x D x D).
     b         : variational offset parameters (N x D).
     m         : narginal means (N x D).
     S         : marginal variances  (N x D x D).
     sDyn      : structure containing additional parameters.
     
-    [Output Parameters]:
+    [Output]
     Esde      : total energy of the sde.
     Ef        : average drift (N x D).
     Edf       : average differentiated drift (N x D).
@@ -152,9 +155,7 @@ def energy_mode(A, b, m, S, sDyn):
     dEsde_dS  : gradient of Esde w.r.t. the covariance (N x D x D).
     dEsde_dth : gradient of Esde w.r.t. the parameter theta.
     dEsde_dSig: gradient of Esde w.r.t. the parameter Sigma.
-    
-    [See also]:
-    
+        
     NOTE: The equation numbers correspond to the paper:
     
     @CONFERENCE{Archambeau2007b,
@@ -271,17 +272,17 @@ def Efg_drift_theta(At, bt, mt, St, sDyn):
     """
         EFG_DRIFT_THETA
 
-    Description:
+    [Description]
     Returns expectation : <(f-g)'*(df/dtheta)>.
     It is used when estimating the drift parameters.
     
-    [Input parameters]:
+    [Input]
     At  : variational linear parameter. (3 x 3).
     bt  : variational offset parameter. (1 x 3).
     mt  : marginal mean (1 x 3).
     St  : marginal covariance  (3 x 3).
     
-    [Output parameters]:
+    [Output]
     Gpar : gradient w.r.t. THETA (1 x 3).
     
     Copyright (c) Michail D. Vrettas - November 2015.
