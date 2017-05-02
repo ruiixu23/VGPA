@@ -23,16 +23,16 @@ def momGauss(m, S, order=0, dmS=None):
     xOut  : uncentered moment (or derivative) of specific 'order' (1 x N).
 
     Copyright (c) Michail D. Vrettas, PhD - November 2015.
-     
+
     Last Updated: November 2015.
     """
-    
+
     # Get the length of 'm'
     N = m.shape[0]
-    
+
     # Initialize the return variable.
     xOut = None
-    
+
     # Compute the moment (or derivative) according to the right order.
     if (order == 0):
         xOut = ones((N,1), dtype='float64')
@@ -102,7 +102,7 @@ def momGauss(m, S, order=0, dmS=None):
         # ...
     else:
         raise ValueError('Unknown Higher Order Gaussian Moment!')
-    
+
     # --->
     return xOut
 

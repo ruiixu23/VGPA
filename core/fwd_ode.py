@@ -18,14 +18,14 @@
         2) Heun        (2nd Order)
         3) Runge-Kutta (2nd Order)
         4) Runge-Kutta (4th Order)
-    
+
 	Author:
 		Michail D. Vrettas, PhD
 
 	Contact:
 		For any bug or suggestions, please contact me at:
 		<vrettasm@gmail.com>
-	
+
 	Webpage:
 		The code can be downloaded from:
         <http://vrettasm.weebly.com/software.html>
