@@ -14,7 +14,7 @@ The code can deal with both 1-D and N-D systems. Examples include:
 0. Ornstein-Uhlenbeck (1-D)
 0. Double-Well (1-D)
 0. Lorenz-63 (3-D)
-0. Lorenz-98 (40-D)
+0. Lorenz-96 (40-D)
 
 If someone is interested in applying the algorithm on other dynamical systems is fully responible to (re)-write the relevant
 files for the necessary expectation functions.
@@ -25,7 +25,7 @@ Note
 Some of the optimizations in the 'auxiliary/optimize.py' are adopted (translated) from NETLAB with the following message:
 
     NOTE: This code is adopted from NETLAB (a free MATLAB library)
-    
+
     Reference Book:
     (1) Ian T. Nabney (2001): Netlab: Algorithms for Pattern Recognition. Advances in Pattern Recognition, Springer.
 

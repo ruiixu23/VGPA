@@ -2,14 +2,13 @@
 import numpy.random as rng
 import numpy as np
 
-# "Numerical/auxiliary" (local):
+# "Numerical/auxiliary" (local)
 from auxiliary.numerical import mytrapz
 
-# Public functions:
+# Public functions
 __all__ = ['system_path', 'plot_sample_path', 'energy_mode']
 
-# Listing: 00
-def lorenz63(x,u):
+def lorenz63(x, u):
     """
     Lorenz63(x,u)
 

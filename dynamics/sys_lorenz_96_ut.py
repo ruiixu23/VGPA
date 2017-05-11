@@ -1,26 +1,26 @@
-# Numerical:
-import numpy.random as rng
+# Numerical
 import numpy as np
 
-# Variational:
-from core import gradEsde_mS
+# Variational
+from core.gradEsde_mS import *
+from auxiliary.numerical import *
 
-# Public functions:
+# Public functions
 __all__ = ['system_path', 'plot_sample_path', 'energy_mode']
 
-# Generates the shifted state vectors.
+# Generates the shifted state vectors
 f1 = lambda x: np.roll(x,-1)
 b1 = lambda x: np.roll(x,+1)
 b2 = lambda x: np.roll(x,+2)
 
-# Listing: 00
-def lorenz98(x,u):
+def lorenz96(x, f):
     """
-    Lorenz98(x,u)
+    LORENZE96
 
-    Differential equations for the Lorenz 98 system (40-D).
-    x - 40 dimensional state vector
-    u - additional parameters (theta)
+    [Description]
+    Differential equations for the Lorenz 96 system.
+    x - State vector
+    f - drift parameter
 
     [OUTPUT]
     dx - return vector.
@@ -33,37 +33,34 @@ def lorenz98(x,u):
 
     # Differential equations.
     for i in range(x.shape[0]):
-        xi = x[i,:]
-        dx[i,:] = (f1(xi) - b2(xi))*b1(xi) - xi + u
+        xi = x[i, :]
+        dx[i, :] = (f1(xi) - b2(xi)) * b1(xi) - xi + f
 
-    # --->
     return dx
 
-# Listing: 01
-def system_path(T, sig0, thet0):
+def system_path(T, D, sig0, thet0):
     """
-        SYSTEM PATH
+    SYSTEM PATH
 
     [Description]
-    This file generates realizations of the stochastic Lorenz 1963 dynamical
+    This file generates realizations of the stochastic Lorenz 1996 dynamical
     system, within a specified time-window. The user must also define the time
     window of the sample path (trajectory), along with the hyperparameter(s).
 
     [Input]
     T     : Time window [t0:dt:tf].
+    D     : The number of states.
     sig0  : System Noise (Variance).
     thet0 : Drift hyper-parameter(s).
 
     [Output]
-    xt    : Contains the system trajectory (N x 3).
+    xt    : Contains the system trajectory (N x D).
 
     Copyright (c) Michail D. Vrettas, PhD - November 2015.
-
-    Last Updated: November 2015.
     """
 
-    # Display a message.
-    print(" Lorenz'98 - trajectory\n")
+    # Display a message
+    print('Lorenz 1996 - trajectory\n')
 
     # Get the time discretization step.
     dt = np.diff(T)[0]
@@ -72,50 +69,48 @@ def system_path(T, sig0, thet0):
     N = len(T)
 
     # Default starting point.
-    x0 = np.array([[thet0]*40], dtype='float64')
+    x0 = np.array([[thet0] * D], dtype='float64')
 
     # Purturb the L-th dimension by 1/1000.
-    x0[0,20] += 1.0e-3
+    x0[0, int(D / 2)] += 1.0e-3
 
     # Time-step for initial discretisation.
     dtau = 1.0e-3
 
     # BURN IN: Using the deterministic equations run forwards in time.
     for t in range(50000):
-        x0 = x0 + lorenz98(x0,thet0)*dtau
+        x0 = x0 + lorenz96(x0, thet0) * dtau
 
     # Preallocate array.
-    X = np.zeros((N,40), dtype='float64')
+    X = np.zeros((N, D), dtype='float64')
 
     # Start with the new point.
-    X[0,:] = x0
+    X[0, :] = x0
 
     # Noise variance coefficient.
-    K = np.sqrt(sig0*dt)
+    K = np.sqrt(sig0 * dt)
 
     # Get the current random seed.
-    r0 = rng.get_state()
+    r0 = np.random.get_state()
 
     # Set the current random seed.
-    rng.seed(6771)
+    np.random.seed(6771)
 
     # Random variables.
-    ek = rng.randn(N,40)
+    ek = np.random.randn(N, D)
 
     # Create the path by solving the SDE iteratively.
-    for t in range(1,N):
-        X[t] = X[t-1] + lorenz98(X[t-1,np.newaxis],thet0)*dt + ek[t].dot(K.T)
+    for t in range(1, N):
+        X[t] = X[t-1] + lorenz96(X[t-1,np.newaxis], thet0) * dt + ek[t].dot(K.T)
 
     # Restore the random seed value.
-    rng.set_state(r0)
+    np.random.set_state(r0)
 
-    # --->
     return X
 
-# Listing: 02
 def plot_sample_path(xt):
     """
-    Provides an auxiliary function to display the Lorenz'98 stochastic path.
+    Provides an auxiliary function to display the Lorenz'96 stochastic path.
     """
     # Plotting:
     from matplotlib.pyplot import figure, show
@@ -126,16 +121,15 @@ def plot_sample_path(xt):
     ax = fig.add_subplot(111)
     ax.imshow(xt.T, aspect='auto')
 
-    ax.set_title('L40D')
+    ax.set_title('Lorenz 1996')
     show()
 
-# Listing: 03
 def energy_mode(A, b, m, S, sDyn):
     """
-        ENERGY MODE:
+     ENERGY_MODE
 
     [Description]
-    Energy for the stocastic Lorenz 63 DE (3 dimensional) and related quantities
+    Energy for the stocastic Lorenz 1996 System and related quantities
     (including gradients).
 
     [Input]
@@ -165,143 +159,138 @@ def energy_mode(A, b, m, S, sDyn):
     }
 
     Copyright (c) Michail D. Vrettas, PhD - November 2015.
-
-    Last Updated: November 2015.
     """
 
-    # {N}umber of discretised points
+    # Number of discretised points
     N = sDyn['N']
 
-    # Time discretiastion step.
+    # Number of states
+    D = sDyn['D']
+
+    # Time discretiastion step
     dt = sDyn['dt']
 
-    # System noise.
+    # System noise
     Sig = sDyn['Sig']
 
-    # Drift (forcing) parameter.
+    # Drift (forcing) parameter
     theta = sDyn['theta']
 
-    # Inverse System Noise.
+    # Inverse System Noise
     SigInv = np.linalg.inv(Sig)
 
-    # Observation times.
+    # Observation times
     idx = sDyn['obsX']
 
-    # Diagonal elements of inverse Sigma.
+    # Diagonal elements of inverse Sigma
     diagSigI = np.diag(SigInv)
 
-    # Energy from the sDyn.
-    Esde = np.zeros((N,1), dtype='float64')
+    # Energy from the sDyn
+    Esde = np.zeros((N, 1), dtype='float64')
 
-    # Average drift.
-    Ef = np.zeros((N,40), dtype='float64')
+    # Average drift
+    Ef = np.zeros((N, D), dtype='float64')
 
-    # Average gradient of drift.
-    Edf = np.zeros((N,40,40), dtype='float64')
+    # Average gradient of drift
+    Edf = np.zeros((N, D, D), dtype='float64')
 
-    # Gradients of Esde w.r.t. 'm' and 'S'.
-    dEsde_dm = np.zeros((N,40),   dtype='float64')
-    dEsde_dS = np.zeros((N,40,40),dtype='float64')
+    # Gradients of Esde w.r.t. 'm' and 'S'
+    dEsde_dm = np.zeros((N, D), dtype='float64')
+    dEsde_dS = np.zeros((N, D, D),dtype='float64')
 
-    # Gradients of Esde w.r.t. 'Theta'.
-    dEsde_dth = np.zeros((N,40), dtype='float64')
+    # Gradients of Esde w.r.t. 'Theta'
+    dEsde_dth = np.zeros((N, D), dtype='float64')
 
-    # Gradients of Esde w.r.t. 'Sigma'.
-    dEsde_dSig = np.zeros((N,40), dtype='float64')
+    # Gradients of Esde w.r.t. 'Sigma'
+    dEsde_dSig = np.zeros((N, D), dtype='float64')
 
-    # Define lambda functions:
-    Fx = {'1': lambda x, At, bt:\
-             (lorenz98(x,theta) + x.dot(At.T) - np.tile(bt,(x.shape[0],1)))**2,\
-          '2': lambda x, _: lorenz98(x,theta)}
+    # Define lambda functions
+    Fx = {
+        '1': lambda x, At, bt: (lorenz96(x, theta) + x.dot(At.T) - np.tile(bt, (x.shape[0],1))) ** 2,
+        '2': lambda x, _: lorenz96(x, theta)}
 
-    # Compute the quantities iteratively.
+    # Compute the quantities iteratively
     for t in range(N):
-        # Get the values at time 't'.
-        At = A[t,:,:]; bt = b[t,:]
-        St = S[t,:,:]; mt = m[t,:]
+        # Get the values at time 't'
+        At = A[t, :, :]; bt = b[t, :]
+        St = S[t, :, :]; mt = m[t, :]
 
         # Compute: <(f(xt)-g(xt))'*(f(xt)-g(xt))>.
-        mbar,_ = ut_approx(Fx['1'], mt, St, At, bt)
+        mbar, _ = ut_approx(Fx['1'], mt, St, At, bt)
 
         # Esde energy: Esde(t) = 0.5*<(f(xt)-g(xt))'*SigInv*(f(xt)-g(xt))>.
-        Esde[t] = 0.5*diagSigI.dot(mbar.T)
+        Esde[t] = 0.5 * diagSigI.dot(mbar.T)
 
         # Average drift: <f(Xt)>
-        Ef[t,:] = E_L98_drift(mt, St, theta)
+        Ef[t,:] = E_L96_drift(mt, St, theta, D)
 
         # Average gradient of drift: <Df(Xt)>
-        Edf[t,:,:] = E_L98_drift_dx(mt)
+        Edf[t, :, :] = E_L96_drift_dx(mt, D)
 
         # Approximate the expectation of the gradients.
-        dmS,_ = ut_approx(gradEsde_mS, mt, St, Fx['2'], mt, St, At, bt, diagSigI)
+        dmS, _ = ut_approx(gradEsde_mS, mt, St, Fx['2'], mt, St, At, bt, diagSigI)
 
         # Gradient w.r.t. mean mt: dEsde(t)_dmt
-        dEsde_dm[t,:] = dmS[0,:40] - Esde[t]*np.linalg.solve(St,mt.T).T
+        dEsde_dm[t, :] = dmS[0, :D] - Esde[t] * np.linalg.solve(St,mt.T).T
 
         #  Gradient w.r.t. covariance St: dEsde(t)_dSt
-        dEsde_dS[t,:,:] = 0.5*(dmS[0,40:].reshape(40,40) - Esde[t]*np.linalg.inv(St))
+        dEsde_dS[t, :, :] = 0.5 * (dmS[0, D:].reshape(D, D) - Esde[t]*np.linalg.inv(St))
 
         # Gradients of Esde w.r.t. 'Theta': dEsde(t)_dtheta
-        dEsde_dth[t,:] = Ef[t,:] + mt.dot(At.T) - bt
+        dEsde_dth[t, :] = Ef[t, :] + mt.dot(At.T) - bt
 
         # Gradients of Esde w.r.t. 'Sigma': dEsde(t)_dSigma
-        dEsde_dSig[t,:] = mbar
-    #...
+        dEsde_dSig[t, :] = mbar
 
     # Compute energy using numerical integration.
-    Esde = mytrapz(Esde,dt,idx)
+    Esde = mytrapz(Esde, dt, idx)
 
     # Final adjustments for the (hyper)parameters.
-    dEsde_dth = diagSigI*mytrapz(dEsde_dth,dt,idx)
+    dEsde_dth = diagSigI*mytrapz(dEsde_dth, dt, idx)
 
     # Final adjustments for the System noise.
-    dEsde_dSig = -0.5*SigInv.dot(np.diag(mytrapz(dEsde_dSig,dt,idx))).dot(SigInv)
+    dEsde_dSig = -0.5 * SigInv.dot(np.diag(mytrapz(dEsde_dSig, dt, idx))).dot(SigInv)
 
-    # --->
     return Esde, Ef, Edf, dEsde_dm, dEsde_dS, dEsde_dth, dEsde_dSig
 
-# Listing: xx
-def E_L98_drift(mt, St, theta):
+def E_L96_drift(mt, St, theta, D):
     """
-    E_L98_DRIFT:
+    E_L96_DRIFT
 
-    Description:
+    [Description]
     Returns the mean value of the drift function <f(x)>.
 
     [INPUT PARAMETERS]
-    mt    : mean vector (1 x 40)
-    St    : covariance matrix (40 x 40)
+    mt    : mean vector (1 x D)
+    St    : covariance matrix (D x D)
     theta : drift parameter.
 
     [OUTPUT PARAMETERS]
-    EF : mean of the drift function (1 x 40).
+    EF : mean of the drift function (1 x D).
 
     Copyright (c) Michail D. Vrettas - November 2015.
     """
 
     # Preallocate vector.
-    Cxx = np.array([0]*40, dtype='float64')
+    Cxx = np.array([0] * D, dtype='float64')
 
     # Local index array: [0, 1, 2, ... , 39]
-    idx = np.arange(0,40)
+    idx = np.arange(0, D)
 
     # Get access to the covariances at the desired points.
-    for i in range(40):
+    for i in range(D):
         Cxx[i] = St[f1(idx)[i],b1(idx)[i]] - St[b2(idx)[i],b1(idx)[i]]
-    #...
 
     # Compute the expected value.
     EF = Cxx + (f1(mt)-b2(mt))*b1(mt) - mt + theta
 
-    # --->
     return EF
 
-# Listing: xx
-def E_L98_drift_dx(x):
+def E_L96_drift_dx(x, D):
     """
-    E_L98_DRIFT_dX:
+    E_L96_DRIFT_dX
 
-    Description:
+    [Description]
     Returns the mean value of the gradient of the drift function
     with respect to the state vector: <df(x)/dx>.
 
@@ -315,15 +304,15 @@ def E_L98_drift_dx(x):
     """
 
     # Preallocate return matrix.
-    Ex = np.zeros((40,40), dtype='float64')
+    Ex = np.zeros((D, D), dtype='float64')
 
     # Local index array: [0, 1, 2, ... , 39]
-    idx = np.arange(0,40)
+    idx = np.arange(0, D)
 
     # Compute the gradient of the state vector at each time point.
-    for i in range(40):
-        # Generate zeros.
-        Gx = [0]*40
+    for i in range(D):
+        # Generate zeros
+        Gx = [0] * D
 
         # Compute the i-th ODE gradient.
         Gx[i] = -1
@@ -333,7 +322,5 @@ def E_L98_drift_dx(x):
 
         # Store i-th gradient.
         Ex[i,:] = Gx
-    # --->
-    return Ex
 
-# End-Of-File
+    return Ex
