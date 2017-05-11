@@ -213,7 +213,7 @@ def ut_approx(f, xbar, Pxx, *args):
     # Compute the weights.
     wList = [k/(D+k)]; wList.extend([1.0/(2.0*(D+k))]*(M-1))
     weights = np.reshape(np.array(wList), (1,M))
-    
+
     # Propagate the new points through the nonlinear transformation.
     Y = f(chi, *args)
 

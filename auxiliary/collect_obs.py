@@ -7,7 +7,7 @@ __all__ = ['collect_obs']
 # Listing 01:
 def collect_obs(xt, T, n_Obs=1, R=0.2, hMask=None):
     """
-        COLLECT_OBS
+    COLLECT_OBS
 
     [Description]
     This function collects a number of noisy observations from a sample path
