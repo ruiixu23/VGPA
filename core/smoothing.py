@@ -13,7 +13,7 @@ from auxiliary.optimize import optim_SCG
 __all__ = ['smoothing']
 
 # Listing: 01
-def smoothing(fun_sde, x0, m0, S0, sde_struct, nit = 150):
+def smoothing(fun_sde, x0, m0, S0, sde_struct, nit=150):
     """
         SMOOTHING
 
@@ -64,11 +64,9 @@ def smoothing(fun_sde, x0, m0, S0, sde_struct, nit = 150):
         grad_A = gradL_Ab(x0, mParam, True)
         grad_N = finiteDiff(varFreeEnergy, x0, mParam)
         print(" MAE: {0}".format(np.abs(grad_A-grad_N).sum()/grad_N.size))
-    # ...
 
     # Setup SCG options.
-    options = {'nit':nit, 'xtol':1.0e-6, 'ftol':1.0e-8,\
-               'disp':True, 'lmin':True}
+    options = {'nit':nit, 'xtol':1.0e-6, 'ftol':1.0e-8, 'disp':True, 'lmin':True}
 
     # My SCG optimization routine.
     x, F, mParam, stat = optim_SCG(varFreeEnergy, x0, gradL_Ab, options, mParam)
@@ -79,7 +77,6 @@ def smoothing(fun_sde, x0, m0, S0, sde_struct, nit = 150):
         grad_A = gradL_Ab(x, mParam, True)
         grad_N = finiteDiff(varFreeEnergy, x, mParam)
         print(" MAE: {0}".format(np.abs(grad_A-grad_N).sum()/grad_N.size))
-    # ...
 
     # Unpack data.
     if (D == 1):
@@ -91,7 +88,6 @@ def smoothing(fun_sde, x0, m0, S0, sde_struct, nit = 150):
         # Reshape them before return.
         A = x[:K].reshape(N,D,D)
         b = x[K:].reshape(N,D)
-    # ...
 
     # Update the structure with the (final) var. parameters.
     mParam['At'] = A
@@ -100,7 +96,5 @@ def smoothing(fun_sde, x0, m0, S0, sde_struct, nit = 150):
     # Update the structure with the optimization statistics.
     mParam['stat'] = stat
 
-    # --->
     return F, mParam
-
-# End-Of-File
+    

@@ -6,6 +6,7 @@ import numpy.random as rng
 
 # Variational:
 from core.gradEsde_mS import *
+from auxiliary.numerical import *
 
 # Public functions:
 __all__ = ['system_path', 'plot_sample_path', 'energy_mode']
