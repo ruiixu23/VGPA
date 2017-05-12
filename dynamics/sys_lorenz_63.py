@@ -40,7 +40,7 @@ def lorenz63(x, u):
 # Listing: 01
 def system_path(T, sig0, thet0):
     """
-        SYSTEM PATH
+    SYSTEM PATH
 
     [Description]
     This file generates realizations of the stochastic Lorenz 1963 dynamical
@@ -48,20 +48,20 @@ def system_path(T, sig0, thet0):
     window of the sample path (trajectory), along with the hyper-parameter(s).
 
     [Input]
-    T     : Time window [t0:dt:tf].
-    sig0  : System Noise (Variance).
-    thet0 : Drift hyper-parameter(s).
+    T     : Time window [t0:dt:tf]
+    sig0  : System Noise (Variance)
+    thet0 : Drift hyper-parameter(s)
 
     [Output]
-    xt    : Contains the system trajectory (N x 3).
+    xt    : Contains the system trajectory (N x 3)
 
     Copyright (c) Michail D. Vrettas, PhD - November 2015.
 
-    Last Updated: November 2015.
+    Last Updated: November 2015
     """
 
     # Display a message.
-    print(" Lorenz'63 - trajectory\n")
+    print('Lorenz 1963 - trajectory')
 
     # Get the time discretization step.
     dt = np.diff(T)[0]

@@ -61,7 +61,7 @@ def system_path(T, x0, sig0, thet0):
     """
 
     # Display a message.
-    print("Lotka-Volterra - trajectory\n")
+    print('Lotka-Volterra - trajectory')
 
     # Get the time discretization step.
     dt = np.diff(T)[0]

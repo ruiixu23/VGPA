@@ -60,7 +60,7 @@ def system_path(T, D, sig0, thet0):
     """
 
     # Display a message
-    print('Lorenz 1996 - trajectory\n')
+    print('Lorenz 1996 - trajectory')
 
     # Get the time discretization step.
     dt = np.diff(T)[0]

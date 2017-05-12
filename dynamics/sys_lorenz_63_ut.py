@@ -1,10 +1,12 @@
-# Numerical:
+# Numerical
 import numpy as np
 import numpy.random as rng
 
-# Ploting:
+# Ploting
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
-# Variational:
+# Variational
 from core.gradEsde_mS import *
 from auxiliary.numerical import *
 
@@ -14,17 +16,17 @@ __all__ = ['system_path', 'plot_sample_path', 'energy_mode']
 # Listing: 00
 def lorenz63(x,u):
     """
-        LORENZ-63 EQUATION
+    LORENZ63
 
     [Description]
-    Differential equations for the Lorenz 63 system (3D).
+    Differential equations for the Lorenz 63 system (3D)
 
     [Input]
     x : 3 dimensional state vector
-    u : additional model parameters (sigma, rho, beta)
+    u : additional model parameters (Sigma, Rho, Beta)
 
     [Output]
-    dx : return vector [3 x 1].
+    dx : return vector [3 x 1]
 
     Copyright (c) Michail D. Vrettas - November 2015.
     """
@@ -33,21 +35,19 @@ def lorenz63(x,u):
     # sigma = 10, rho = 28, beta = 8/3
     s, r, b = u
 
-    # Preallocate return vector.
+    # Preallocate return vector
     dx = np.zeros(x.shape, dtype='float64')
 
-    # Differential equations.
+    # Differential equations
     dx[:,0] = -s*(x[:,0] - x[:,1])
     dx[:,1] = (r - x[:,2])*x[:,0] - x[:,1]
     dx[:,2] = x[:,0]*x[:,1] - b*x[:,2]
 
-    # --->
     return dx
 
-# Listing: 01
 def system_path(T, sig0, thet0):
     """
-        SYSTEM PATH
+    SYSTEM PATH
 
     [Description]
     This file generates realizations of the stochastic Lorenz 1963 dynamical
@@ -55,22 +55,22 @@ def system_path(T, sig0, thet0):
     window of the sample path (trajectory), along with the hyper-parameter(s).
 
     [Input]
-    T     : Time window [t0:dt:tf].
-    sig0  : System Noise (Variance).
-    thet0 : Drift hyper-parameter(s).
+    T     : Time window [t0:dt:tf]
+    sig0  : System Noise (Variance)
+    thet0 : Drift hyper-parameter(s)
 
     [Output]
-    xt    : Contains the system trajectory (N x 3).
+    xt    : Contains the system trajectory (N x 3)
 
     SEE ALSO: collect_obs.
 
     Copyright (c) Michail D. Vrettas, PhD - November 2015.
 
-    Last Updated: November 2015.
+    Last Updated: November 2015
     """
 
     # Display a message.
-    print(" Lorenz'63 - trajectory\n")
+    print('Lorenz 1963 - trajectory')
 
     # Get the time discretization step.
     dt = np.diff(T)[0]
@@ -89,7 +89,7 @@ def system_path(T, sig0, thet0):
         x0 = x0 + lorenz63(x0,thet0)*dtau
 
     # Preallocate array.
-    X = np.zeros((N,3), dtype='float64')
+    X = np.zeros((N, 3), dtype='float64')
 
     # Start with the new point.
     X[0] = x0
@@ -104,30 +104,25 @@ def system_path(T, sig0, thet0):
     rng.seed(6771)
 
     # Random variables.
-    ek = rng.randn(N,3)
+    ek = rng.randn(N, 3)
 
     # Restore the random seed value.
     rng.set_state(r0)
 
     # Create the path by solving the "stochastic" Diff.Eq. iteratively.
-    for t in range(1,N):
-        X[t] = X[t-1] + lorenz63(X[t-1,np.newaxis],thet0)*dt + ek[t].dot(K.T)
+    for t in range(1, N):
+        X[t] = X[t - 1] + lorenz63(X[t - 1, np.newaxis], thet0) * dt + ek[t].dot(K.T)
 
-    # --->
     return X
 
-# Listing: 02
 def plot_sample_path(xt):
     """
-    Provides an auxiliary function to display the Lorenz'63
+    Provides an auxiliary function to display the Lorenz 1963
     stochastic sample path in 3-Dimensional space.
     """
-    import matplotlib.pyplot as plt
-    from mpl_toolkits.mplot3d import Axes3D
-
     fig = plt.figure()
     ax = fig.gca(projection='3d')
-    ax.plot(xt[:,0], xt[:,1], xt[:,2], '*', label="Lorenz 3D (stochastic)")
+    ax.plot(xt[:, 0], xt[:, 1], xt[:, 2], '*', label='Lorenz 3D (stochastic)')
     ax.legend()
     plt.grid(True)
     plt.show()
@@ -135,7 +130,7 @@ def plot_sample_path(xt):
 # Listing: 03
 def energy_mode(A, b, m, S, sDyn):
     """
-        ENERGY MODE
+    ENERGY MODE
 
     [Description]
     Energy for the stocastic Lorenz 63 DE (3 dimensional) and related quantities
@@ -172,7 +167,7 @@ def energy_mode(A, b, m, S, sDyn):
     Last Updated: November 2015.
     """
 
-    # {N}umber of discretised points
+    # Number of discretised points
     N = sDyn['N']
 
     # Time discretiastion step.
@@ -189,23 +184,23 @@ def energy_mode(A, b, m, S, sDyn):
     diagSigI = np.diag(SigInv)
 
     # Energy from the sde.
-    Esde = np.zeros((N,1), dtype='float64')
+    Esde = np.zeros((N, 1), dtype='float64')
 
     # Average drift.
-    Ef = np.zeros((N,3), dtype='float64')
+    Ef = np.zeros((N, 3), dtype='float64')
 
     # Average gradient of drift.
-    Edf = np.zeros((N,3,3), dtype='float64')
+    Edf = np.zeros((N, 3, 3), dtype='float64')
 
     # Gradients of Esde w.r.t. 'm' and 'S'.
-    dEsde_dm = np.zeros((N,3),  dtype='float64')
-    dEsde_dS = np.zeros((N,3,3),dtype='float64')
+    dEsde_dm = np.zeros((N, 3),  dtype='float64')
+    dEsde_dS = np.zeros((N, 3, 3), dtype='float64')
 
     # Gradients of Esde w.r.t. 'Theta'.
-    dEsde_dth = np.zeros((N,3), dtype='float64')
+    dEsde_dth = np.zeros((N, 3), dtype='float64')
 
     # Gradients of Esde w.r.t. 'Sigma'.
-    dEsde_dSig = np.zeros((N,3), dtype='float64')
+    dEsde_dSig = np.zeros((N, 3), dtype='float64')
 
     # Drift parameters.
     theta = sDyn['theta']
@@ -214,77 +209,77 @@ def energy_mode(A, b, m, S, sDyn):
     vS, vR, vB = theta
 
     # Define lambda functions:
-    Fx = {'1': lambda x, At, bt:\
-          (lorenz63(x, theta) + x.dot(At.T) - np.tile(bt,(x.shape[0],1)))**2,\
-          '2': lambda x, _: lorenz63(x, theta)}
+    Fx = {
+        '1': lambda x, At, bt: (lorenz63(x, theta) + x.dot(At.T) - np.tile(bt, (x.shape[0],1))) ** 2,
+        '2': lambda x, _: lorenz63(x, theta)}
 
     # Compute the quantities iteratively.
     for t in range(N):
         # Get the values at time 't'.
-        At = A[t,:,:]; bt = b[t,:]
-        St = S[t,:,:]; mt = m[t,:]
+        At = A[t, :, :];
+        bt = b[t, :]
+        St = S[t, :, :]; mt = m[t, :]
 
         # Compute: <(f(xt)-g(xt))'*(f(xt)-g(xt))>.
         mbar, _ = ut_approx(Fx['1'], mt, St, At, bt)
 
         # Esde energy: Esde(t) = 0.5*<(f(xt)-g(xt))'*SigInv*(f(xt)-g(xt))>.
-        Esde[t] = 0.5*diagSigI.dot(mbar.T)
+        Esde[t] = 0.5 * diagSigI.dot(mbar.T)
 
         # Average drift: <f(Xt)>
-        Ef[t,:] = np.array([(vS*(mt[1] - mt[0])),\
-                            (vR*mt[0] - mt[1] - St[2,0] - mt[0]*mt[2]),\
-                            (St[1,0] + mt[0]*mt[1] - vB*mt[2])])
+        Ef[t, :] = np.array([
+            (vS * (mt[1] - mt[0])),
+            (vR * mt[0] - mt[1] - St[2,0] - mt[0] * mt[2]),
+            (St[1, 0] + mt[0] * mt[1] - vB * mt[2])])
 
         # Average gradient of drift: <Df(Xt)>
-        Edf[t,:,:] = np.array([[-vS, vS, 0],\
-                               [(vR - mt[2]), -1, -mt[0]],\
-                               [mt[1], mt[0], -vB]])
+        Edf[t, :, :] = np.array([
+            [-vS, vS, 0],
+            [(vR - mt[2]), -1, -mt[0]],
+            [mt[1], mt[0], -vB]])
 
         # Approximate the expectation of the gradients.
-        dmS,_ = ut_approx(gradEsde_mS, mt, St, Fx['2'], mt, St, At, bt, diagSigI)
+        dmS, _ = ut_approx(gradEsde_mS, mt, St, Fx['2'], mt, St, At, bt, diagSigI)
 
         # Gradient w.r.t. mean mt: dEsde(t)_dmt
-        dEsde_dm[t,:] = dmS[0,:3] - Esde[t]*np.linalg.solve(St,mt.T).T
+        dEsde_dm[t, :] = dmS[0, :3] - Esde[t] * np.linalg.solve(St, mt.T).T
 
         #  Gradient w.r.t. covariance St: dEsde(t)_dSt
-        dEsde_dS[t,:,:] = 0.5*(dmS[0,3:].reshape(3,3) - Esde[t]*np.linalg.inv(St))
+        dEsde_dS[t, :, :] = 0.5 * (dmS[0, 3:].reshape(3, 3) - Esde[t] * np.linalg.inv(St))
 
         # Gradients of Esde w.r.t. 'Theta': dEsde(t)_dtheta
-        dEsde_dth[t,:] = Efg_drift_theta(At, bt, mt, St, sDyn)
+        dEsde_dth[t, :] = Efg_drift_theta(At, bt, mt, St, sDyn)
 
         # Gradients of Esde w.r.t. 'Sigma': dEsde(t)_dSigma
-        dEsde_dSig[t,:] = mbar
-    # ...
+        dEsde_dSig[t, :] = mbar
 
     # Compute energy using numerical integration.
-    Esde = mytrapz(Esde,dt,idx)
+    Esde = mytrapz(Esde, dt, idx)
 
     # Final adjustments for the (hyper)-parameters.
-    dEsde_dth = diagSigI*mytrapz(dEsde_dth,dt,idx)
+    dEsde_dth = diagSigI*mytrapz(dEsde_dth, dt, idx)
 
     # Final adjustments for the System noise.
-    dEsde_dSig = -0.5*SigInv.dot(np.diag(mytrapz(dEsde_dSig,dt,idx))).dot(SigInv)
+    dEsde_dSig = -0.5 * SigInv.dot(np.diag(mytrapz(dEsde_dSig, dt, idx))).dot(SigInv)
 
-    # --->
     return Esde, Ef, Edf, dEsde_dm, dEsde_dS, dEsde_dth, dEsde_dSig
 
-# Listing: 04
 def Efg_drift_theta(At, bt, mt, St, sDyn):
     """
-        EFG_DRIFT_THETA
+    EFG_DRIFT_THETA
 
     [Description]
     Returns expectation : <(f-g)'*(df/dtheta)>.
     It is used when estimating the drift parameters.
 
     [Input]
-    At  : variational linear parameter. (3 x 3).
-    bt  : variational offset parameter. (1 x 3).
-    mt  : marginal mean (1 x 3).
-    St  : marginal covariance  (3 x 3).
+    At  : variational linear parameter. (3 x 3)
+    bt  : variational offset parameter. (1 x 3)
+    mt  : marginal mean (1 x 3)
+    St  : marginal covariance  (3 x 3)
 
     [Output]
-    Gpar : gradient w.r.t. THETA (1 x 3).
+    Gpar : gradient w.r.t. THETA (1 x 3)
 
     Copyright (c) Michail D. Vrettas - November 2015.
     """
@@ -307,8 +302,8 @@ def Efg_drift_theta(At, bt, mt, St, sDyn):
     # Note that this is symmetric so we extract
     # only the upper triangular elements of S(t).
     Sxx, Sxy, Sxz = St[0]
-    Syy, Syz = St[1,1:]
-    Szz = St[2,2]
+    Syy, Syz = St[1, 1:]
+    Szz = St[2, 2]
 
     # Compute second (2nd) order expectations.
     Exx = Sxx + mx**2
@@ -319,18 +314,12 @@ def Efg_drift_theta(At, bt, mt, St, sDyn):
     Eyz = Syz + my*mz
 
     # Compute third (3rd) order expectations.
-    Exxz = Sxx*mz + 2*Sxz*mx + (mx**2)*mz
-    Exyz = Sxy*mz + Sxz*my + Syz*mx + mx*my*mz
+    Exxz = Sxx*mz + 2 * Sxz * mx + (mx ** 2) * mz
+    Exyz = Sxy*mz + Sxz * my + Syz * mx + mx * my * mz
 
     # Compute the expectation.
-    V1 = Eyy*(vS + A12) + Exx*(vS - A11) + Exy*(A11 - 2*vS - A12) +\
-         A13*(Eyz - Exz) + b1*(mx - my)
-    # ---
-    V2 = vR*Exx - Exy - Exxz + A21*Exx + A22*Exy + A23*Exz - b2*mx
-    # ---
-    V3 = -Exyz + vB*Ezz - A31*Exz - A32*Eyz - A33*Ezz + b3*mz
+    V1 = Eyy * (vS + A12) + Exx * (vS - A11) + Exy * (A11 - 2 * vS - A12) + A13 * (Eyz - Exz) + b1 * (mx - my)
+    V2 = vR * Exx - Exy - Exxz + A21 * Exx + A22 * Exy + A23 * Exz - b2 * mx
+    V3 = -Exyz + vB * Ezz - A31 * Exz - A32 * Eyz - A33 * Ezz + b3 * mz
 
-    # --->
     return np.array([V1, V2, V3])
-
-# End-Of-File

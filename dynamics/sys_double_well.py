@@ -73,10 +73,8 @@ def system_path(T, sig0, thet0):
     for t in range(1,N):
         x[t] = x[t-1] + 4*x[t-1]*(thet0 - x[t-1]**2)*dt + K*ek[t]
 
-    # --->
     return x
 
-# Listing: 02
 def plot_sample_path(Tk, xt):
     """
     Provides an auxiliary function to display the DW
@@ -90,10 +88,9 @@ def plot_sample_path(Tk, xt):
     plt.grid(True)
     plt.show()
 
-# Listing: 03
 def energy_mode(A, b, m, S, sDyn):
     """
-        ENERGY MODE
+    ENERGY MODE
 
     [Description]
     Energy for the double-well SDE and related quantities (including gradients).

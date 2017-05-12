@@ -47,7 +47,9 @@ def collect_obs(xt, T, n_Obs=1, R=0.2, hMask=None):
         raise ValueError('Observation density exceeds the number of samples.')
 
     # Total number of observations.
-    M = int(np.floor(np.abs(T[0]-T[-1])*n_Obs))
+    M = int(np.floor(np.abs(T[0] - T[-1]) * n_Obs))
+
+    print(M)
 
     # Number of discretized time points.
     N = T.shape[0]

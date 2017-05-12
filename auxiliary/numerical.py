@@ -202,7 +202,7 @@ def ut_approx(f, xbar, Pxx, *args):
     try:
         sPxx = chol((D+k)*Pxx).T
     except LinAlgError:
-        sPxx = chol(Pxx*eye(D)).T
+        sPxx = chol(Pxx*np.eye(D)).T
 
     # Replicate the array.
     xMat = np.tile(xbar,(D,1))

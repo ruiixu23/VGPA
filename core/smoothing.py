@@ -15,7 +15,7 @@ __all__ = ['smoothing']
 # Listing: 01
 def smoothing(fun_sde, x0, m0, S0, sde_struct, nit=150):
     """
-        SMOOTHING
+    SMOOTHING
 
     [Description]
     Variational Gaussian Process Approximation (VGPA) for inference of SDEs.
@@ -97,4 +97,3 @@ def smoothing(fun_sde, x0, m0, S0, sde_struct, nit=150):
     mParam['stat'] = stat
 
     return F, mParam
-    
