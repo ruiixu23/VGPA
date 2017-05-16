@@ -1,15 +1,16 @@
 # Imports:
 import numpy as np
 from copy import deepcopy
+
 from core.varFreeEnergy import varFreeEnergy
 
 # Public functions:
 __all__ = ['gradL_Ab']
 
-# Listing 01:
+
 def gradL_Ab(Ab, mParam, evalF=False):
     """
-       GRADIENT W.R.T AB
+    GRADIENT W.R.T AB
 
     Description:
     Returns the gradient of the Lagrangian w.r.t. the variational
@@ -40,20 +41,19 @@ def gradL_Ab(Ab, mParam, evalF=False):
         varFreeEnergy(Ab, mParam)
 
     # Call the right version of the gradients.
-    if (mParam['sde_struct']['D'] == 1):
+    if mParam['sde_struct']['D'] == 1:
         return gradL_Ab_1D(Ab, mParam)
     else:
         return gradL_Ab_nD(Ab, mParam)
-    # ...
 
-# Listing 02:
+
 def gradL_Ab_1D(Ab, mParam):
     """
-       GRAD_AB_1D : Works with 1D systems.
+    GRAD_AB_1D : Works with 1D systems.
     """
 
     # Inverse system noise.
-    SigInv = 1.0/mParam['sde_struct']['Sig']
+    SigInv = 1.0 / mParam['sde_struct']['Sig']
 
     # Extract model parameters.
     N = mParam['sde_struct']['N']
@@ -78,8 +78,8 @@ def gradL_Ab_1D(Ab, mParam):
     Edf = mParam['Edf']
 
     # Preallocate the return arrays.
-    gLA = np.zeros((N,1), dtype='float64')
-    gLb = np.zeros((N,1), dtype='float64')
+    gLA = np.zeros((N, 1), dtype='float64')
+    gLb = np.zeros((N, 1), dtype='float64')
 
     # Main loop.
     for t in range(N):
@@ -90,29 +90,28 @@ def gradL_Ab_1D(Ab, mParam):
         lamt = lam[t]
 
         # Gradient of Esde w.r.t. 'b' -Eq(29)-
-        dEsde_dbt = SigInv*(-Efx[t] - At*mt + b[t])
+        dEsde_dbt = SigInv * (-Efx[t] - At * mt + b[t])
 
         # Gradient of Esde w.r.t. 'A' -Eq(28)-
-        dEsde_dAt = SigInv*(Edf[t] + At)*St - dEsde_dbt*mt
+        dEsde_dAt = SigInv * (Edf[t] + At) * St - dEsde_dbt * mt
 
         # Gradient of Lagranian w.r.t. 'A' -Eq(12)-
-        gLA[t] = dEsde_dAt - lamt*mt - 2.0*Psi[t]*St
+        gLA[t] = dEsde_dAt - lamt * mt - 2.0 * Psi[t] * St
 
         # Gradient of Lagranian w.r.t. 'b' -Eq(13)-
         gLb[t] = dEsde_dbt + lamt
-    # ...
 
     # Scale the results with the time increment.
     gLA = dt*gLA
     gLb = dt*gLb
 
     # Group the gradients together and exit.
-    return np.concatenate((gLA,gLb))
+    return np.concatenate((gLA, gLb))
 
-# Listing 03:
+
 def gradL_Ab_nD(Ab, mParam):
     """
-       GRAD_AB_nD: Works with n-D systems.
+    GRAD_AB_nD: Works with n-D systems.
     """
 
     # System noise.
@@ -129,8 +128,8 @@ def gradL_Ab_nD(Ab, mParam):
     K = N*D*D
 
     # Unpack data.
-    A = Ab[:K].reshape(N,D,D)
-    b = Ab[K:].reshape(N,D)
+    A = Ab[:K].reshape(N, D, D)
+    b = Ab[K:].reshape(N, D)
 
     # The Inverse of System Noise covariance.
     # NB: Ideally we shouldn't directly invert the matrix,
@@ -150,36 +149,32 @@ def gradL_Ab_nD(Ab, mParam):
     Edf = mParam['Edf']
 
     # Preallocate the return arrays.
-    gLA = np.zeros((N,D,D),dtype='float64')
-    gLb = np.zeros((N,D),  dtype='float64')
+    gLA = np.zeros((N, D, D), dtype='float64')
+    gLb = np.zeros((N, D),  dtype='float64')
 
     # Main loop.
     for t in range(N):
         # Get the values at time 't'.
-        At = A[t,:,:]
-        St = S[t,:,:]
-        mt = m[t,:]
-        lamt = lam[t,:]
+        At = A[t, :, :]
+        St = S[t, :, :]
+        mt = m[t, :]
+        lamt = lam[t, :]
 
         # Gradient of Esde w.r.t. 'b' -Eq(29)-
-        dEsde_dbt = (-Efx[t,:] - mt.dot(At.T) + b[t,:]).dot(SigInv.T)
+        dEsde_dbt = (-Efx[t, :] - mt.dot(At.T) + b[t, :]).dot(SigInv.T)
 
         # Gradient of Esde w.r.t. 'A' -Eq(28)-
-        dEsde_dAt = SigInv.dot(Edf[t,:,:] + At).dot(St) - dEsde_dbt.T.dot(mt)
+        dEsde_dAt = SigInv.dot(Edf[t, :, :] + At).dot(St) - dEsde_dbt.T.dot(mt)
 
         # Gradient of Lagranian w.r.t. 'A' -Eq(12)-
-        gLA[t,:,:] = dEsde_dAt - lamt.T.dot(mt) - 2.0*Psi[t,:,:].dot(St)
+        gLA[t, :, :] = dEsde_dAt - lamt.T.dot(mt) - 2.0 * Psi[t, :, :].dot(St)
 
         # Gradient of Lagranian w.r.t. 'b' -Eq(13)-
-        gLb[t,:] = dEsde_dbt + lamt
-    # ...
+        gLb[t, :] = dEsde_dbt + lamt
 
     # Scale the results with the time increment.
-    gLA = dt*gLA
-    gLb = dt*gLb
+    gLA = dt * gLA
+    gLb = dt * gLb
 
     # Group the gradients together and exit.
-    return np.concatenate((gLA.ravel()[:,np.newaxis],\
-                           gLb.ravel()[:,np.newaxis]))
-
-# End-Of-File
+    return np.concatenate((gLA.ravel()[:, np.newaxis], gLb.ravel()[:, np.newaxis]))

@@ -1,15 +1,15 @@
 # Imports:
 import numpy as np
-from numpy.linalg import inv, LinAlgError
-from numpy.linalg import cholesky as chol
+
+from numpy.linalg import cholesky, inv, LinAlgError
 
 # Public functions:
 __all__ = ['chol_inv', 'log_det', 'finiteDiff', 'ut_approx', 'mytrapz', 'safelog']
 
-# Listing: 01
+
 def chol_inv(A):
     """
-        CHOLINV
+    CHOL_INV
 
     [Description]
     Returns the inverse of a matrix by using Cholesky decomposition.
@@ -30,30 +30,27 @@ def chol_inv(A):
     """
 
     # Check if input is empty.
-    if (A is None):
-        print("Input matrix is None!")
+    if A is None:
+        print('Input matrix is None!')
         return None, None
 
-    # Check if input is scalar.
     if np.isscalar(A):
-        return 1.0/A, 1.0/np.sqrt(A)
-    else:
-        # If the input is vector.
-        if (len(A.shape) == 1):
-            # Transform it to diagonal matrix
-            A = np.diag(A)
+        # Check if input is scalar.
+        return 1.0 / A, 1.0 / np.sqrt(A)
+    elif len(A.shape) == 1:
+        # If the input is vector, transform it to diagonal matrix
+        A = np.diag(A)
 
     # Try Cholesky decomposition.
-    Ri = inv(chol(A))
+    Ri = inv(cholesky(A))
     Ai = Ri.dot(Ri.T)
 
-    # --->
     return Ai, Ri
 
-# Listing: 02
+
 def log_det(A):
     """
-        LOG(DET)
+    LOG_DET
 
     [Description]
     Returns the log(det(A)), but more stable and accurate.
@@ -86,12 +83,12 @@ def log_det(A):
             A = np.diag(A)
 
     # --->
-    return 2*np.sum(np.log(chol(A).diagonal()))
+    return 2*np.sum(np.log(cholesky(A).diagonal()))
 
-# Listing: 03
-def finiteDiff(fun, x, mParam, h = 1.0e-6):
+
+def finiteDiff(fun, x, mParam, h=1.0e-6):
     """
-        FINITEDIFF
+    FINITEDIFF
 
     [Description]
     Calculates the approximate derivative of function "fun"
@@ -120,16 +117,16 @@ def finiteDiff(fun, x, mParam, h = 1.0e-6):
     D = x.size
 
     # Make input a column-vector.
-    x = x.reshape(D,1)
+    x = x.reshape(D, 1)
 
     # Preallocate array.
-    gradN = np.zeros((D,1))
+    gradN = np.zeros((D, 1))
 
     # Unit vector.
-    e = np.zeros((D,1))
+    e = np.zeros((D, 1))
 
     # Initial message.
-    print(' Checking numerically the gradient ...')
+    print('Checking numerically the gradient...')
 
     # Check all 'D' directions (coordinates of x).
     for i in range(D):
@@ -137,25 +134,25 @@ def finiteDiff(fun, x, mParam, h = 1.0e-6):
         e[i] = 1.0
 
         # Move a small way in the i-th direction of x.
-        fplus  = fun(x+h*e, mParam)
-        fminus = fun(x-h*e, mParam)
+        fplus  = fun(x + h * e, mParam)
+        fminus = fun(x - h * e, mParam)
 
         # Use central difference formula for approximation.
-        gradN[i] = 0.5*(fplus - fminus)/h
+        gradN[i] = 0.5 * (fplus - fminus) / h
 
         # Switch OFF i-th direction
-        e[i] = 0.0;
+        e[i] = 0.0
 
         # Display progress so far ...
-        if (i%100 == 0):
-            print('Done: {0:.3}%'.format(i/D*100))
-    # --->
+        if i % 100 == 0:
+            print('Done: {:.3}%'.format(i / D * 100))
+
     return gradN
 
-# Listing: 04
+
 def ut_approx(f, xbar, Pxx, *args):
     """
-        UNSCENTED TRANSFORMATION
+    UNSCENTED TRANSFORMATION
 
     [Description]
     This method computes the approximate values for the mean and
@@ -187,32 +184,33 @@ def ut_approx(f, xbar, Pxx, *args):
     """
 
     # Get the dimensions of the state vector.
-    if (len(xbar.shape) == 1):
+    if len(xbar.shape) == 1:
         D = xbar.shape[0]
     else:
         D = xbar.shape[1]
 
     # Total number of sigma points.
-    M = (2*D + 1)
+    M = (2 * D + 1)
 
     # Scaling factor.
-    k = 1.05*D
+    k = 1.05 * D
 
     # Use Cholesky to get the lower triangular matrix.
     try:
-        sPxx = chol((D+k)*Pxx).T
+        sPxx = cholesky((D + k) * Pxx).T
     except LinAlgError:
-        sPxx = chol(Pxx*np.eye(D)).T
+        sPxx = cholesky(Pxx * np.eye(D)).T
 
     # Replicate the array.
-    xMat = np.tile(xbar,(D,1))
+    xMat = np.tile(xbar, (D, 1))
 
     # Put all sigma points together.
-    chi = np.concatenate((xbar[np.newaxis,:], (xMat+sPxx), (xMat-sPxx)))
+    chi = np.concatenate((xbar[np.newaxis, :], (xMat + sPxx), (xMat - sPxx)))
 
     # Compute the weights.
-    wList = [k/(D+k)]; wList.extend([1.0/(2.0*(D+k))]*(M-1))
-    weights = np.reshape(np.array(wList), (1,M))
+    wList = [k / (D + k)]
+    wList.extend([1.0 / (2.0 * (D + k))] * (M - 1))
+    weights = np.reshape(np.array(wList), (1, M))
 
     # Propagate the new points through the nonlinear transformation.
     Y = f(chi, *args)
@@ -221,19 +219,18 @@ def ut_approx(f, xbar, Pxx, *args):
     ybar = weights.dot(Y)
 
     # Compute the approximate covariance.
-    wM = np.eye(M) - np.tile(weights,(M,1))
+    wM = np.eye(M) - np.tile(weights, (M, 1))
     Q = wM.dot(np.diag(weights.ravel())).dot(wM.T)
 
     # Compute the new approximate covariance.
     Pyy = Y.T.dot(Q).dot(Y)
 
-    # --->
     return ybar, Pyy
 
-# Listing: 05
+
 def mytrapz(fxt, dt, idx=None):
     """
-        TRAPZ (NUMERICAL INTEGRATION)
+    TRAPZ (NUMERICAL INTEGRATION)
 
     [Description]
     This method computes the numerical integral of the discrete function values
@@ -286,10 +283,10 @@ def mytrapz(fxt, dt, idx=None):
     # Return the total integral.
     return v
 
-# Listing: 06
+
 def safelog(x = None):
     '''
-        SAFE LOG
+    SAFE LOG
 
     [Description]
     This (helper) function prevents the computation of very small or very  large
@@ -323,8 +320,8 @@ def safelog(x = None):
     '''
 
     # Prevent empty input.
-    if(x == None):
-        print(" [safelog] in debug mode ... exiting:", end="")
+    if x is None:
+        print('[safelog] in debug mode ... exiting:', end='')
         return None
 
     # Define LOWER and UPPER bounds.
@@ -335,18 +332,15 @@ def safelog(x = None):
     x = np.asarray(x)
 
     # Check for scalar.
-    if (x.ndim == 0):
-        if (x <_LWR_Bound):
+    if x.ndim == 0:
+        if x <_LWR_Bound:
             x =_LWR_Bound
-        elif (x >_UPR_Bound):
+        elif x >_UPR_Bound:
             x =_UPR_Bound
-        #_end_if
     else:
         # Check Lower/Upper bounds.
-        x[x <_LWR_Bound] =_LWR_Bound
-        x[x >_UPR_Bound] =_UPR_Bound
+        x[x < _LWR_Bound] = _LWR_Bound
+        x[x > _UPR_Bound] = _UPR_Bound
 
     # Return the log() of the filtered input.
     return np.log(x)
-
-# End-Of-File
