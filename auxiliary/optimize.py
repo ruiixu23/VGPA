@@ -5,10 +5,10 @@ from copy import deepcopy
 # Public functions:
 __all__ = ['optim_SCG', 'optim_CG', 'optim_SA']
 
-# Listing: 01
+
 def optim_SCG(f, x0, gf, options, mParam):
     """
-        OPTIM_SCG
+    OPTIM_SCG
 
     [Description]
     Scaled conjugate gradient optimization, attempts to find a local minimum
@@ -21,13 +21,13 @@ def optim_SCG(f, x0, gf, options, mParam):
     f      : is the objective function to be optimised.
     x0     : is the initial point of function (D x 1).
     gf     : is the derivative of the objective function w.r.t 'x'.
-    mParam : is a dictionary containing all additional parameters for both
-             'f' and 'gf' functions.
     options: is an set of optional values for the optimizer:
                 (1) the number of iterations,
                 (2) absolute precision in ' x',
                 (3) absolute precision in 'fx',
                 (4) display error statistics flag
+    mParam : is a dictionary containing all additional parameters for both
+             'f' and 'gf' functions.
 
     [Output]
     x      : the point where the minimum was found.
@@ -77,14 +77,20 @@ def optim_SCG(f, x0, gf, options, mParam):
     D = x0.size
 
     # Preallocate stats dictionary.
-    stat = {'MaxIt':nit, 'Fx':np.zeros((nit,1)), 'f_eval':0, 'g_eval':0, \
-            'beta':np.zeros((nit,1)), 'gradx':np.zeros((nit,1))}
+    stat = {
+        'MaxIt': nit,
+        'Fx': np.zeros((nit, 1)),
+        'f_eval': 0,
+        'g_eval': 0,
+        'beta': np.zeros((nit, 1)),
+        'gradx': np.zeros((nit, 1))
+    }
 
     # Initialization
     x = deepcopy(x0)
 
     # Make sure input is a column-vector.
-    x = x.reshape(D,1)
+    x = x.reshape(D, 1)
 
     # Initial sigma value.
     sigma0 = 1.0e-3
@@ -116,7 +122,8 @@ def optim_SCG(f, x0, gf, options, mParam):
     beta = 1.0
 
     # Lower & Upper bounds on scale (beta).
-    betaMin = 1.0e-15; betaMax = 1.0e+100
+    betaMin = 1.0e-15
+    betaMax = 1.0e+100
 
     # Get the machine precision constant.
     eps_float = np.finfo(float).eps
@@ -124,20 +131,21 @@ def optim_SCG(f, x0, gf, options, mParam):
     # Main optimization loop.
     for j in range(nit):
         # Calculate first and second directional derivatives.
-        if (success == 1):
+        if success == 1:
             mu = d.T.dot(gradnew)
-            if (mu >= 0.0):
+            if mu >= 0.0:
                 d = -gradnew
                 mu = d.T.dot(gradnew)
 
             # Compute kappa and check for termination.
             kappa = d.T.dot(d)
-            if (kappa < eps_float):
-                fx = fnow; stat['MaxIt'] = j
+            if kappa < eps_float:
+                fx = fnow
+                stat['MaxIt'] = j
                 return x, fx, mParam, stat
 
             # Update sigma and check the gradient on a new direction.
-            sigma = sigma0/np.sqrt(kappa)
+            sigma = sigma0 / np.sqrt(kappa)
             xplus = x + sigma*d
 
             # Because we evaluate only gf(xplus) we set the flag 'True'.
@@ -148,15 +156,14 @@ def optim_SCG(f, x0, gf, options, mParam):
             stat['g_eval'] += 1
 
             # Compute theta.
-            theta = (d.T.dot(gplus - gradnew))/sigma
-        # ...
+            theta = (d.T.dot(gplus - gradnew)) / sigma
 
         # Increase effective curvature and evaluate step size alpha.
         delta = theta + beta*kappa
-        if (delta <= 0):
+        if delta <= 0:
             delta = beta*kappa
             beta = beta-(theta/kappa)
-        # ...
+
         alpha = -(mu/delta)
 
         # Evaluate the function at a new point.
@@ -166,7 +173,7 @@ def optim_SCG(f, x0, gf, options, mParam):
 
         # Calculate the new comparison ratio.
         Delta = 2.0*(fnew - fold)/(alpha*mu)
-        if (Delta >= 0):
+        if Delta >= 0:
             success = 1
             nsuccess += 1
             x = xnew
@@ -176,7 +183,6 @@ def optim_SCG(f, x0, gf, options, mParam):
             success = 0
             fnow = fold
             gnow = gradold
-        # ...
 
         # Total gradient.
         totGrad = np.math.fsum(np.abs(gnow))
@@ -188,12 +194,11 @@ def optim_SCG(f, x0, gf, options, mParam):
 
         # Used in debuging mode.
         if disp:
-            print(' {0}:\tfx={1:.3f}\tsum(gx)={2:.3f}'.format(j,fnow,totGrad))
+            print(' {0}:\tfx={1:.3f}\tsum(gx)={2:.3f}'.format(j, fnow, totGrad))
 
-        # ...
-        if (success == 1):
+        if success == 1:
             # Check for termination.
-            if (np.abs(alpha*d).max() <= xtol) and (np.abs(fnew-fold) <= ftol):
+            if np.abs(alpha*d).max() <= xtol and np.abs(fnew-fold) <= ftol:
                 fx = fnew; stat['MaxIt'] = j
                 return x, fx, mParam, stat
             else:
@@ -210,27 +215,25 @@ def optim_SCG(f, x0, gf, options, mParam):
                 stat['g_eval'] += 1
 
                 # If the gradient is zero then we are done.
-                if (gradnew.T.dot(gradnew) == 0.0):
+                if gradnew.T.dot(gradnew) == 0.0:
                     fx = fnow; stat['MaxIt'] = j
                     return x, fx, mParam, stat
-            # ...
-        # ...
 
         # Adjust beta according to comparison ratio.
-        if (Delta < 0.25):
+        if Delta < 0.25:
             beta = min(4.0*beta, betaMax)
 
-        if (Delta > 0.75):
+        if Delta > 0.75:
             beta = max(0.5*beta, betaMin)
 
         # Update search direction using Polak-Ribiere formula,
         # or re-start in direction of negative gradient after
         # 'D' steps.
-        if (nsuccess == D):
+        if nsuccess == D:
             d = -gradnew
             nsuccess = 0
         else:
-            if (success == 1):
+            if success == 1:
                 gamma = max(gradnew.T.dot(gradold - gradnew)/mu, 0.0)
                 d = gamma*d - gradnew
     # end-for
@@ -241,10 +244,9 @@ def optim_SCG(f, x0, gf, options, mParam):
     # Here we have reached the maximum number of iterations.
     fx = fold
 
-    # --->
     return x, fx, mParam, stat
 
-# Listing: 02
+
 def optim_CG(f, x0, gf, options, mParam):
     """
         OPTIM_CG
@@ -316,14 +318,20 @@ def optim_CG(f, x0, gf, options, mParam):
     D = x0.size
 
     # Preallocate stats dictionary.
-    stat = {'MaxIt':nit, 'Fx':np.zeros((nit,1)), 'f_eval':0, 'g_eval':0,\
-            'eta':np.zeros((nit,1)), 'gradx':np.zeros((nit,1))}
+    stat = {
+        'MaxIt': nit,
+        'Fx': np.zeros((nit, 1)),
+        'f_eval': 0,
+        'g_eval': 0,
+        'eta': np.zeros((nit, 1)),
+        'gradx':np.zeros((nit, 1))
+    }
 
     # Initialization
     x = deepcopy(x0)
 
     # Make sure input is a column-vector.
-    x = x.reshape(D,1)
+    x = x.reshape(D, 1)
 
     # Initial learning rate: must be positive.
     eta0 = 0.15
@@ -356,12 +364,13 @@ def optim_CG(f, x0, gf, options, mParam):
 
         # Check if the gradient is zero.
         mu = gradold.T.dot(gradold)
-        if (mu == 0.0):
-            fx = fold; stat['MaxIt'] = j
+        if mu == 0.0:
+            fx = fold
+            stat['MaxIt'] = j
             return x, fx, mParam, stat
 
         # This shouldn't occur, but rest of code depends on 'd' being downhill.
-        if (gradnew.T.dot(d) > 0.0):
+        if gradnew.T.dot(d) > 0.0:
             d = -d
 
         # Update search direction.
@@ -374,7 +383,7 @@ def optim_CG(f, x0, gf, options, mParam):
         stat['f_eval'] += cnt
 
         # Exit if you can't find any better eta.
-        if (eta == 0.0):
+        if eta == 0.0:
             x = xold; fx = fold; stat['MaxIt'] = j
             return x, fx, mParam, stat
 
@@ -388,7 +397,7 @@ def optim_CG(f, x0, gf, options, mParam):
         stat['g_eval'] += 1
 
         # Check for termination.
-        if (np.abs(x-xold).max() <= xtol) and (np.abs(fnew-fold) <= ftol):
+        if np.abs(x-xold).max() <= xtol and np.abs(fnew-fold) <= ftol:
             fx = fnew; stat['MaxIt'] = j
             return x, fx, mParam, stat
 
@@ -407,7 +416,6 @@ def optim_CG(f, x0, gf, options, mParam):
         # Used in debuging mode.
         if disp:
             print(' {0}:\tfx={1:.3f}\tsum(gx)={2:.3f}'.format(j, fnew, totGrad))
-    # ...
 
     # Display a warning to the user.
     print(' Maximum number of iterations has been reached.')
@@ -415,10 +423,9 @@ def optim_CG(f, x0, gf, options, mParam):
     # Here we have reached the maximum number of iterations.
     fx = fold
 
-    # --->
     return x, fx, mParam, stat
 
-# Listing: 03
+
 def backtrack(f, x0, f0, df0, eta0, r, *args):
     """
         BACTRACK
@@ -462,7 +469,7 @@ def backtrack(f, x0, f0, df0, eta0, r, *args):
     fx = f((x0 + eta0*df0), *args)
 
     # Termination condition for backtracking.
-    while ((cnt < maxiter) and (not np.isfinite(fx) or (fx > f0))):
+    while cnt < maxiter and (not np.isfinite(fx) or (fx > f0)):
         # Decrease stepsize.
         eta *= r
         # Compute the new position.
@@ -471,12 +478,10 @@ def backtrack(f, x0, f0, df0, eta0, r, *args):
         fx = f(x,*args)
         # Increase counter by one.
         cnt += 1
-    # ...
 
-    # Safeguard: --->
     return max(eta, 0.0), cnt+1
 
-# Listing: 03
+
 def optim_SA(f, x0, gf, options, mParam):
     """
         OPTIM_SA
@@ -557,8 +562,13 @@ def optim_SA(f, x0, gf, options, mParam):
         nit = 100*D
 
     # Preallocate stats dictionary.
-    stat = {'MaxIt':nit, 'Fx':np.zeros((nit,1)), 'f_eval':0, 'g_eval':0,\
-            'Temp':np.zeros((nit,1))}
+    stat = {
+        'MaxIt': nit,
+        'Fx': np.zeros((nit, 1)),
+        'f_eval': 0,
+        'g_eval': 0,
+        'Temp': np.zeros((nit, 1))
+    }
 
     # Local search.
     if 'lmin' in options:
@@ -594,7 +604,7 @@ def optim_SA(f, x0, gf, options, mParam):
         # Main iteration loop.
         for i in range(nit):
             # Update current temperature.
-            if (np.mod(i,kappa) == 0.0):
+            if np.mod(i,kappa) == 0.0:
                 Tk = (T0 * (TF/T0)**(i/nit))
 
             # Propose new state using normaly distributed
@@ -613,7 +623,7 @@ def optim_SA(f, x0, gf, options, mParam):
             dFx = fnew-fx
 
             # Check for acceptance.
-            if((dFx < 0) or (np.exp(-dFx/Tk) > np.random.rand())):
+            if (dFx < 0) or (np.exp(-dFx/Tk) > np.random.rand()):
                 # Increase accepted states by one
                 acc += 1
                 # Update to the new values.
@@ -633,31 +643,32 @@ def optim_SA(f, x0, gf, options, mParam):
             # Check for termination.
             # If the minimum has not changed for 'max_lim' iterations
             # then break the loop.
-            if ((i >= max_lim) and\
-                (np.diff(stat['Fx'][i-max_lim:i], axis=0).sum() == 0.0)):
+            if i >= max_lim and (np.diff(stat['Fx'][i-max_lim:i], axis=0).sum() == 0.0):
                 print(' Algorithm terminated in {0} iterations'.format(i))
                 stat['MaxIt'] = i
                 break
 
         # Current optimum values (after optimisation).
-        xopt = x; fopt = fx
+        xopt = x
+        fopt = fx
 
         # From the final result; perform local minimization using SCG.
-        if (lmin):
-            print(" >> Searching locally using SCG ...")
+        if lmin:
+            print(' >> Searching locally using SCG ...')
             # Setup local optimisation parameters.
-            local_options = {'nit':1000, 'xtol':xtol, 'ftol':ftol, 'disp':True}
+            local_options = {
+                'nit': 1000,
+                'xtol': xtol,
+                'ftol': ftol,
+                'disp': True
+            }
             # Call SCG for a small number of iterations.
-            x_loc, fx_loc, mParam_loc, _ =\
-                        optim_SCG(f, xopt, gf, local_options, deepcopy(mParam))
+            x_loc, fx_loc, mParam_loc, _ = optim_SCG(f, xopt, gf, local_options, deepcopy(mParam))
 
             # If this local minimum is better; then accept it.
-            if(fx_loc < fopt):
+            if fx_loc < fopt:
                 xopt = x_loc
                 fopt = fx_loc
                 mParam = mParam_loc
 
-    # --->
     return xopt, fopt, mParam, stat
-
-# End-of-file.

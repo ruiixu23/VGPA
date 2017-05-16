@@ -5,10 +5,10 @@ from core import fwd_ode, bwd_ode, likelihood, kl0
 # Public functions:
 __all__ = ['varFreeEnergy']
 
-# Listing: 01
+
 def varFreeEnergy(Ab, mParam):
     """
-        VARIATIONAL FREE ENERGY (COST FUNCTION)
+    VARIATIONAL FREE ENERGY (COST FUNCTION)
 
     [Description]
     Computes parameters related to the variational posterior process
@@ -97,8 +97,7 @@ def varFreeEnergy(Ab, mParam):
     mParam['Edf'] = Edf
 
     # Backward sweep to ensure constraints are satisfied.
-    lam, Psi = bwd_ode.solver(A, dEsde_dm, dEsde_dS,\
-                                 dEobs_dm, dEobs_dS, dt, ode_method)
+    lam, Psi = bwd_ode.solver(A, dEsde_dm, dEsde_dS, dEobs_dm, dEobs_dS, dt, ode_method)
 
     # Lagrange multipliers: lam(t), Psi(t).
     mParam['lamt'] = lam
@@ -111,7 +110,4 @@ def varFreeEnergy(Ab, mParam):
     # Variational Free Energy (cost function value).
     F = asscalar(KL0 + Eobs + Esde)
 
-    # --->
     return F
-
-# End-Of-File

@@ -127,7 +127,7 @@ def plot_sample_path(xt):
     plt.grid(True)
     plt.show()
 
-# Listing: 03
+
 def energy_mode(A, b, m, S, sDyn):
     """
     ENERGY MODE
@@ -263,6 +263,7 @@ def energy_mode(A, b, m, S, sDyn):
     dEsde_dSig = -0.5 * SigInv.dot(np.diag(mytrapz(dEsde_dSig, dt, idx))).dot(SigInv)
 
     return Esde, Ef, Edf, dEsde_dm, dEsde_dS, dEsde_dth, dEsde_dSig
+
 
 def Efg_drift_theta(At, bt, mt, St, sDyn):
     """

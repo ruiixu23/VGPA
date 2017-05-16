@@ -4,10 +4,10 @@ import numpy as np
 # Public functions:
 __all__ = ['gradEsde_mS']
 
-# Listing: xx
+
 def gradEsde_mS(x, F, mt, St, At, bt, diagSigI, sDyn=None):
     """
-        GRADIENT of ESDE w.r.t MEAN and STD
+    GRADIENT of ESDE w.r.t MEAN and STD
 
     [Description]
     Returns the gradient of the -SDE- energy function with respect
@@ -38,14 +38,14 @@ def gradEsde_mS(x, F, mt, St, At, bt, diagSigI, sDyn=None):
     K, D = x.shape
 
     # Preallocate array: [K x D^2]
-    dSt = np.zeros((K,D*D), dtype='float64')
+    dSt = np.zeros((K, D * D), dtype='float64')
 
     # Compute auxiliary quantity:
-    xMat = (F(x,sDyn) + x.dot(At.T) - np.tile(bt,(x.shape[0],1)))**2
-    v = diagSigI.dot(xMat.T) # [1 x K]
+    xMat = (F(x, sDyn) + x.dot(At.T) - np.tile(bt, (x.shape[0], 1))) ** 2
+    v = diagSigI.dot(xMat.T)  # [1 x K]
 
     # Gradient w.r.t. 'mt': [K x D]
-    dmt = np.linalg.solve(St,(np.tile(v,(D,1))*x.T)).T
+    dmt = np.linalg.solve(St, (np.tile(v, (D, 1)) * x.T)).T
 
     # Inverse of marginal covariance.
     Sti = np.linalg.inv(St)
@@ -53,19 +53,16 @@ def gradEsde_mS(x, F, mt, St, At, bt, diagSigI, sDyn=None):
     # Calculate the gradients w.r.t. 'St'.
     for k in range(K):
         # Take the values at sample 'k'.
-        zt = np.reshape(x[k,:] - mt, (1,D))
+        zt = np.reshape(x[k, :] - mt, (1, D))
         # Square matrix.
         Zk = zt.T.dot(zt)
         # Gradient w.r.t. 'St'.
-        dSt[k,:] = v[k] * np.linalg.solve(St,Zk).dot(Sti).ravel()
-    # ...
+        dSt[k, :] = v[k] * np.linalg.solve(St, Zk).dot(Sti).ravel()
 
     # Scale the results.
-    dmt = 0.5*dmt
-    dSt = 0.5*dSt
+    dmt = 0.5 * dmt
+    dSt = 0.5 * dSt
 
     # Group the gradients together and exit:
     # The dimensions are: [K x D]+[K x D^2]
     return np.concatenate((dmt, dSt), axis=1)
-
-# End-Of-File

@@ -12,6 +12,7 @@ from auxiliary.optimize import optim_SCG
 # Public functions:
 __all__ = ['smoothing']
 
+
 def smoothing(fun_sde, x0, m0, S0, sde_struct, nit=150):
     """
     SMOOTHING
