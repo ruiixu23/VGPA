@@ -4,7 +4,7 @@ import numpy as np
 # Public functions:
 __all__ = ['collect_obs']
 
-# Listing 01:
+
 def collect_obs(xt, T, n_Obs=1, R=0.2, hMask=None):
     """
     COLLECT_OBS
@@ -90,5 +90,3 @@ def collect_obs(xt, T, n_Obs=1, R=0.2, hMask=None):
     # np.random.set_state(r0)
 
     return obsX, obsY
-
-# End-Of-File
