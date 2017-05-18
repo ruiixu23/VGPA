@@ -98,16 +98,16 @@ def system_path(T, sig0, thet0):
     K = np.sqrt(sig0*dt)
 
     # Get the current random seed.
-    r0 = rng.get_state()
+    # r0 = rng.get_state()
 
     # Set the current random seed.
-    rng.seed(6771)
+    # rng.seed(6771)
 
     # Random variables.
     ek = rng.randn(N, 3)
 
     # Restore the random seed value.
-    rng.set_state(r0)
+    # rng.set_state(r0)
 
     # Create the path by solving the "stochastic" Diff.Eq. iteratively.
     for t in range(1, N):
