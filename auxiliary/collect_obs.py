@@ -32,10 +32,10 @@ def collect_obs(xt, T, n_Obs=1, R=0.2, hMask=None):
     """
 
     # Get the current random seed.
-    r0 = np.random.get_state()
+    # r0 = np.random.get_state()
 
     # Set the current random seed.
-    np.random.seed(2015)
+    # np.random.seed(2015)
 
     # Get the discretization step.
     dt = np.diff(T)[0]
@@ -43,7 +43,7 @@ def collect_obs(xt, T, n_Obs=1, R=0.2, hMask=None):
     # Check if the required number of observations
     # per time unit exceeds the available capacity
     # of samples.
-    if (n_Obs > 1.0/dt):
+    if n_Obs > 1.0 / dt:
         raise ValueError('Observation density exceeds the number of samples.')
 
     # Total number of observations.
@@ -64,7 +64,7 @@ def collect_obs(xt, T, n_Obs=1, R=0.2, hMask=None):
     # Check if a mask has been given.
     if hMask is not None:
         # Here we have (d < D)
-        obsY = obsY[:,hMask]
+        obsY = obsY[:, hMask]
 
     # Dimensionality of observations.
     d = obsY.shape[1]
@@ -72,10 +72,10 @@ def collect_obs(xt, T, n_Obs=1, R=0.2, hMask=None):
     # Check if (co)variance vector/matrix is given.
     if np.isscalar(R):
         # Add fixed Gaussian noise.
-        obsY = obsY + np.sqrt(R)*np.random.randn(M,1)
+        obsY = obsY + np.sqrt(R) * np.random.randn(M, 1)
     else:
         # Variance (diagonal) matrix.
-        if (len(R.shape) == 1):
+        if len(R.shape) == 1:
             R = np.diag(R)
 
         # Get the square root of the noise matrix.
@@ -84,12 +84,11 @@ def collect_obs(xt, T, n_Obs=1, R=0.2, hMask=None):
         sR = np.sqrt(R)
 
         # Add fixed Gaussian noise.
-        obsY = obsY + sR.dot(np.random.randn(d,M)).T
+        obsY = obsY + sR.dot(np.random.randn(d, M)).T
 
     # Restore the random seed value.
-    np.random.set_state(r0)
+    # np.random.set_state(r0)
 
-    # --->
     return obsX, obsY
 
 # End-Of-File

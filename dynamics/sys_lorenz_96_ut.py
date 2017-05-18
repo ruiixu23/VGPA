@@ -9,9 +9,10 @@ from auxiliary.numerical import *
 __all__ = ['system_path', 'plot_sample_path', 'energy_mode']
 
 # Generates the shifted state vectors
-f1 = lambda x: np.roll(x,-1)
-b1 = lambda x: np.roll(x,+1)
-b2 = lambda x: np.roll(x,+2)
+f1 = lambda x: np.roll(x, -1)
+b1 = lambda x: np.roll(x, +1)
+b2 = lambda x: np.roll(x, +2)
+
 
 def lorenz96(x, f):
     """
@@ -37,6 +38,7 @@ def lorenz96(x, f):
         dx[i, :] = (f1(xi) - b2(xi)) * b1(xi) - xi + f
 
     return dx
+
 
 def system_path(T, D, sig0, thet0):
     """
@@ -91,22 +93,23 @@ def system_path(T, D, sig0, thet0):
     K = np.sqrt(sig0 * dt)
 
     # Get the current random seed.
-    r0 = np.random.get_state()
+    # r0 = np.random.get_state()
 
     # Set the current random seed.
-    np.random.seed(6771)
+    # np.random.seed(6771)
 
     # Random variables.
     ek = np.random.randn(N, D)
 
     # Create the path by solving the SDE iteratively.
     for t in range(1, N):
-        X[t] = X[t-1] + lorenz96(X[t-1,np.newaxis], thet0) * dt + ek[t].dot(K.T)
+        X[t] = X[t - 1] + lorenz96(X[t - 1, np.newaxis], thet0) * dt + ek[t].dot(K.T)
 
     # Restore the random seed value.
-    np.random.set_state(r0)
+    # np.random.set_state(r0)
 
     return X
+
 
 def plot_sample_path(xt):
     """
@@ -123,6 +126,7 @@ def plot_sample_path(xt):
 
     ax.set_title('Lorenz 1996')
     show()
+
 
 def energy_mode(A, b, m, S, sDyn):
     """
