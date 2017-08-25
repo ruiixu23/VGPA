@@ -45,6 +45,7 @@ def lorenz63(x,u):
 
     return dx
 
+
 def system_path(T, sig0, thet0):
     """
     SYSTEM PATH
