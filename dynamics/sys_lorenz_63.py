@@ -83,8 +83,8 @@ def system_path(T, sig0, thet0):
     # Preallocate array.
     X = np.zeros((N, 3), dtype='float64')
 
-    # Start with the new point.
-    X[0] = x0
+    # Start with the new point with some random perturbation
+    X[0] = x0 + np.random.standard_normal(3)
 
     # Noise variance coefficient.
     K = np.sqrt(sig0 * dt)
